@@ -1,0 +1,72 @@
+#! /bin/sh
+
+
+CONFIG=/etc/sysconfig/schoolserver
+STATE_OK=0
+STATE_WARNING=1
+STATE_CRITICAL=2
+STATE_UNKNOWN=-1
+#DATE=`date "+%b %d"`
+CHECKFILE=/tmp/backup_check
+CHECKWARNING=/tmp/backup_warn
+CHECKMOUNT=/tmp/backup_mount
+CHECKFIN=/tmp/backup_fin
+#LASTLINE=$( tail --lines=1 /var/log/oss-backup.log )
+
+
+#echo $DATE
+#echo $CTIME
+#echo $DIFF
+
+. $CONFIG
+if [ $SCHOOL_BACKUP = "no" ];then
+	echo "OK: Kein Backup eingerichtet"
+	exit $STATE_OK
+else 
+
+LASTLINE=$( tail --lines=1 /var/log/oss-backup.log )
+DATE=`date +%s`
+CTIME=`stat -c %Y '/var/log/oss-backup.log'`
+DIFF=$(($DATE-$CTIME))
+
+# Wenn backup älter als 10 Tage (in sekunden) dann exit_Critical
+if [ "$DIFF" -le 864000 ];then
+
+	tail --lines=10 /var/log/oss-backup.log > $CHECKFILE
+
+grep "WARNING" $CHECKFILE > $CHECKWARNING
+grep "Unable to mount" $CHECKFILE > $CHECKMOUNT 
+grep "Backup finished" $CHECKFILE > $CHECKFIN
+
+	if [ -s $CHECKMOUNT ];then
+		echo -n "CRITICAL: "
+        	tail --lines=1  $CHECKMOUNT
+        	exit $STATE_CRITICAL
+	fi
+
+	if [ -s $CHECKWARNING ];then 
+		tail --lines=1  $CHECKWARNING
+		exit $STATE_WARNING
+	fi
+	
+	if [ -s $CHECKFIN ];then
+        	echo "OK: Backup running fine: $LASTLINE"
+        	exit $STATE_OK
+	fi
+else 
+	echo "CRITICAL: BACKUP zu Alt"
+	exit $STATE_CRITICAL
+fi
+
+fi
+
+#if [ ! -e  "$CHECKFILE" ]; then
+#        touch /var/log/oss-backup.log_check
+#        cat "$LOGFILE" > "$CHECKFILE"
+#fi
+#
+#comm -1 -3 "$LOGFILE" "$CHECKFILE" > "$DIFF"
+
+##case 
+
+

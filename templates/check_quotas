@@ -1,0 +1,9 @@
+#!/bin/bash
+STATE=$( cat /var/adm/oss/check_quotas )
+echo $STATE
+ [ "$STATE" != "${STATE//Critical:}" ] && exit 2;
+ [ "$STATE" != "${STATE//Warning:}" ]  && exit 1;
+ [ "$STATE" != "${STATE//OK:}" ]       && exit 0;
+echo "No quota check running"
+exit -1;
+

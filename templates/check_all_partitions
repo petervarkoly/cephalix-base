@@ -1,0 +1,23 @@
+#!/bin/bash
+IFS=$'\n'
+ERROR=""
+for i in $( mount )
+do
+	DEV=$( echo $i | gawk '{ print $1 }' )
+	MP=$( echo $i | gawk '{ print $3 }' )
+	if [ ${DEV/\/dev\//} = $DEV ]; then
+		continue
+	fi
+	E=$( /usr/lib/nagios/plugins/check_disk -w 20% -c 10% -p $DEV )
+	if [ ${E/DISK OK/} = $E ]; then
+		ERROR="$ERROR $MP"
+	fi
+done
+
+if [ -z "$ERROR" ]; then
+	echo "DISK OK - All Partitions are OK"
+	exit 0
+fi
+echo "DISK WARNING - $ERROR"
+exit 1
+

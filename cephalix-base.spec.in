@@ -1,0 +1,69 @@
+#
+# spec file for package oss-base
+#
+# Copyright (c) 2017 Peter Varkoly, Nuernberg, Germany.
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. 
+
+# Please submit bugfixes or comments via http://oss.cephalix.eu/
+#
+
+Name:           cephalix-base
+Version:        @VERSION@
+Release:        @RELEASE@
+License:        Commercial
+Vendor:         Dipl.Ing. Peter Varkoly <peter@varkoly.de>
+Summary:        Base package for the OSS
+Url:            http://oss.cephalix.eu/
+Group:          Productivity/
+Source:         %{name}.tar.bz2
+BuildArch:      noarch
+PreReq:         filesystem
+Requires:       rsync
+BuildRequires:  rsync
+#PreReq:
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+
+Provides:       openschool-base
+Obsoletes:      openschool-base
+
+%if ! %{defined _fillupdir}
+%define _fillupdir /var/adm/fillup-templates
+%endif
+
+%prep
+%setup -q  -n %{name}
+
+%build
+
+%install
+make install DESTDIR=%{buildroot} FILLUPDIR=%{_fillupdir} %{?_smp_mflags}
+
+%pre
+
+%preun
+
+%post
+%{fillup_only -n cephalix}
+
+%postun
+
+%files
+%defattr(-,root,root)
+/etc/cron.daily/
+/usr/share/cephalix/
+%{_fillupdir}/sysconfig.cephalix
+%doc README.md
+
+%description
+This package contains the basic utilitis to setup configure and manage the CEPHALIX base system.
+
+Authors:
+--------
+        peter@varkoly.de
+
+ChangeLog:
+---------
+
