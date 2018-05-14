@@ -1,11 +1,6 @@
 #!/usr/bin/perl
 # Copyright (c) 2014 Peter Varkoly <peter@varkoly.de> Nürnberg, Germany.  All rights reserved.
-BEGIN{ push @INC,"/usr/share/oss/lib/"; }
 
-use oss_base;
-use oss_utils;
-
-my $oss  = oss_base->new();
 
 my $schools = $oss->get_schools(1);
 
