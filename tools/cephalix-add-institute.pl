@@ -18,33 +18,93 @@ my @TO_CLEAN   = qw(
         adminPW
         );
 
+#{
+#"id": 0,
+#"uuid": "string",
+#"cephalixPW": "string",
+#"ipVPN": "string",
+#"locality": "string",
+#"nmServerNet": "string",
+#"deleted": "string",
+#"recDate": "2018-05-26T14:28:20.088Z",
+#}
+
+
+my %VARMAP {
+        'REPLACE-CEPHALIX-PW' => 'adminPW',
+        'REPLACE-CN' => 'name',
+        'REPLACE-GW' => 'gwTrNet',
+        'REPLACE-NET' => 'network',
+        'REPLACE-NET-GW' => 'ipGateway',
+        'REPLACE-NM' => 'netmask',
+        'REPLACE-PW' => 'adminPW',
+        'REPLACE-REGCODE' => 'registrationsCode',
+        'REPLACE-TRIP' => 'ipTrNet',
+        'REPLACE-TRNM' => 'nmTrNet',
+        'REPLACE-admin' => 'ipAdmin',
+        'REPLACE-anon' => 'anonDhcp',
+        'REPLACE-backup' => 'ipBackup',
+        'REPLACE-dom' => 'domain',
+        'REPLACE-mail' => 'ipMail',
+        'REPLACE-print' => 'ipPrint',
+        'REPLACE-proxy' => 'ipProxy',
+        'REPLACE-room' => 'firstRoom',
+        'REPLACE-type' => 'type',
+	ipAdmin	=> 'REPLACE-admin',
+	ipMail	=> 'REPLACE-mail',
+	ipPrint	=> 'REPLACE-print',
+	ipProxy	=> 'REPLACE-proxy',
+	ipBackup=> 'REPLACE-backup',
+	network	=> 'REPLACE-NET',
+	netmask => 'REPLACE-NM',
+	anonDhcp=> 'REPLACE-anon-net',
+	firstRoom=> 'REPLACE-room'
+	ipTrNet	=> 'REPLACE-TRIP',
+	nmTrNet	=> 'REPLACE-TRNM',
+	gwTrNet => 'REPLACE-GW',
+	domain	=> 'REPLACE-dom',
+	type	=> 'REPLACE-type',
+	registrationsCode => 'REPLACE-REGCODE',
+	adminPW => 'REPLACE-PW',
+	cephalixPW=>'REPLACE-CEPHALIX-PW'
+}
+
 my @VARS   = qw(
-        uuid
-        name
-        locality
-        state
-        type
-        domain
-        adminPW
-        REPLACE-REGCODE
-        ipTrNet
-        nmTrNet
-        gwTrNet
-        network
-        netmask
-        ipAdmin
-        ipMail
-        ipPrint
-        ipProxy
-        ipBackup
-        ntpServer
-        nmServerNet
-        anonDhcp
-        firstRoom
-        REPLACE-CEPHALIX
-        REPLACE-zadmin
-        CEPHALIX_PATH
-        CEPHALIX_DOMAIN
+	REPLACE-ADMIN-CERT
+	REPLACE-ADMIN-KEY
+	REPLACE-CA-CERT
+	REPLACE-CEPHALIX
+	REPLACE-CEPHALIX-PW
+	REPLACE-CN
+	REPLACE-GW
+	REPLACE-NET
+	REPLACE-NET-GW
+	REPLACE-NM
+	REPLACE-NM-STRING
+	REPLACE-PW
+	REPLACE-REGCODE
+	REPLACE-SCHOOL-CERT
+	REPLACE-SCHOOL-KEY
+	REPLACE-SERVER-CERT
+	REPLACE-SERVER-KEY
+	REPLACE-SSHKEY
+	REPLACE-TRIP
+	REPLACE-TRNM
+	REPLACE-VPN-CERT
+	REPLACE-VPN-KEY
+	REPLACE-WORKGROUP
+	REPLACE-admin
+	REPLACE-anon
+	REPLACE-anon-net
+	REPLACE-backup
+	REPLACE-dom
+	REPLACE-mail
+	REPLACE-ntp
+	REPLACE-print
+	REPLACE-proxy
+	REPLACE-room
+	REPLACE-type
+	REPLACE-zadmin
 );
 
 my $READONLY   = {
@@ -118,11 +178,11 @@ foreach my $v ( @VARS )
         next if defined $READONLY->{$v};
         if (defined $m->val('Defaults',$v) )
         {
-                $m->setval('Defaults',$v,$reply->{$v});
+                $m->setval('Defaults',$v,$reply->{$VARMAP{$v}});
         }
         else
         {
-                $m->newval('Defaults',$v,$reply->{$v});
+                $m->newval('Defaults',$v,$reply->{$VARMAP{$v}});
         }
 }
 foreach my $v ( keys(%$READONLY) )
@@ -186,11 +246,10 @@ if( ! -e "$CEPHALIX_PATH/CA_MGM/certs/admin.".$reply->{"domain"}.".key.pem" ) {
 
 my $CEPHALIX_PATH   = $m->val('Defaults','CEPHALIX_PATH');
 my $CEPHALIX_DOMAIN = $m->val('Defaults','CEPHALIX_DOMAIN');
-my $CEPHALIX_DN     = $cephalix->{LDAP_BASE};
-my $SCHOOL_DOMAIN   = $m->val('Defaults','domain');
-my $SCHOOL_sn       = $m->val('Defaults','uuid');
-my $SCHOOL_NET      = $m->val('Defaults','network');
-my $SCHOOL_NM       = $m->val('Defaults','netmask');
+my $SCHOOL_DOMAIN   = $m->val('Defaults','REPLACE-dom');
+my $SCHOOL_sn       = $m->val('Defaults','REPLACE-sn');
+my $SCHOOL_NET      = $m->val('Defaults','REPLACE-NET');
+my $SCHOOL_NM       = $m->val('Defaults','REPLACE-NM');
 my $block           = new Net::Netmask("$SCHOOL_NET/$SCHOOL_NM");
 my $BITS            = $block->bits();
 
@@ -211,18 +270,12 @@ $SSLVARS{'REPLACE-VPN-KEY'}    = `cat $CEPHALIX_PATH/CA_MGM/certs/$SCHOOL_sn.$CE
 $SSLVARS{'REPLACE-VPN-CERT'}   = `cat $CEPHALIX_PATH/CA_MGM/certs/$SCHOOL_sn.$CEPHALIX_DOMAIN.cert.pem`;
 $SSLVARS{'REPLACE-ADMIN-KEY'}  = `cat $CEPHALIX_PATH/CA_MGM/certs/admin.$SCHOOL_DOMAIN.key.pem`;
 $SSLVARS{'REPLACE-ADMIN-CERT'} = `cat $CEPHALIX_PATH/CA_MGM/certs/admin.$SCHOOL_DOMAIN.cert.pem`;
-$SSLVARS{'REPLACE-SERVER-KEY'} = `cat $CEPHALIX_PATH/CA_MGM/certs/schooladmin.$SCHOOL_DOMAIN.key.pem`;
-$SSLVARS{'REPLACE-SERVER-CERT'}= `cat $CEPHALIX_PATH/CA_MGM/certs/schooladmin.$SCHOOL_DOMAIN.cert.pem`;
 $SSLVARS{'REPLACE-SCHOOL-KEY'} = `cat $CEPHALIX_PATH/CA_MGM/certs/schoolserver.$SCHOOL_DOMAIN.key.pem`;
 $SSLVARS{'REPLACE-SCHOOL-CERT'}= `cat $CEPHALIX_PATH/CA_MGM/certs/schoolserver.$SCHOOL_DOMAIN.cert.pem`;
-
-my $CEPHALIX_SDN = "dc=$SCHOOL_sn,".$CEPHALIX_DN;
-$XML =~ s/localityMD_CEPHALIX_SDN/$CEPHALIX_SDN/;
 
 foreach my $sslpar ( @SSL )
 {
         $XML =~ s/$sslpar/$SSLVARS{$sslpar}/g;
 }
 write_file("$CEPHALIX_PATH/configs/$SCHOOL_sn.xml",$XML);
-
 
