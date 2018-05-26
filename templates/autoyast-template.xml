@@ -341,12 +341,12 @@ SCHOOL_WORKGROUP="REPLACE-WORKGROUP"
 ## Type:	string readonly
 ## Default:	"DE"
 # Default langugage.
-SCHOOL_LANGUAGE="DE"
+SCHOOL_LANGUAGE="REPLACE-LANGUAGE"
 
 ## Type:	string readonly
 ## Default:	"DE"
 # Default country code.
-SCHOOL_CCODE="DE"
+SCHOOL_CCODE="REPLACE-CCODE"
 
 ## Type:	string readonly
 ## Default:

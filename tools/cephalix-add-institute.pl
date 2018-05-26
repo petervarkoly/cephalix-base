@@ -7,7 +7,7 @@ use JSON;
 use Config::IniFiles;
 use Net::Netmask;
 
-my $Defaults = "/usr/share/oss/templates/CEPHALIX/CreateOSSXML_Defaults.ini";
+my $Defaults = "/usr/share/oss/templates/CEPHALIX/Defaults.ini";
 my $XML      = "/usr/share/oss/templates/CEPHALIX/autoyast-template.xml";
 
 my @TO_CLEAN   = qw(
