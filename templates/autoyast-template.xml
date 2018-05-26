@@ -73,7 +73,7 @@ comp-lzo
 verb 4
 mute 20
 mute-replay-warnings
-ca   /etc/ssl/servercerts/CEPHALIX-CA.pem
+ca   /etc/ssl/servercerts/cacert.pem
 cert /etc/ssl/servercerts/vpncert.pem
 key  /etc/ssl/servercerts/vpnkey.pem
 proto tcp
@@ -90,7 +90,7 @@ nobind
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/CEPHALIX-CA.pem</file_path>
+      <file_path>/etc/ssl/servercerts/cacert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-CA-CERT
@@ -111,42 +111,28 @@ nobind
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/servercert.pem</file_path>
-      <file_owner>root:root</file_owner>
-      <file_permissions>644</file_permissions>
-      <file_contents><![CDATA[REPLACE-SERVER-CERT
-]]></file_contents>
-    </config_file>
-    <config_file>
-      <file_path>/etc/ssl/servercerts/serverkey.pem</file_path>
-      <file_owner>root:root</file_owner>
-      <file_permissions>640</file_permissions>
-      <file_contents><![CDATA[REPLACE-SERVER-KEY
-]]></file_contents>
-    </config_file>
-    <config_file>
-      <file_path>/etc/ssl/servercerts/admincert.pem</file_path>
+      <file_path>/etc/ssl/servercerts/certs/admin.REPLACE-dom.cert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-ADMIN-CERT
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/adminkey.pem</file_path>
+      <file_path>/etc/ssl/servercerts/certs/admin.REPLACE-dom.key.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-ADMIN-KEY
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/schoolservercert.pem</file_path>
+      <file_path>/etc/ssl/servercerts/certs/schoolserver.REPLACE-dom.cert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-SCHOOL-CERT
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/schoolserverkey.pem</file_path>
+      <file_path>/etc/ssl/servercerts/certs/schoolserver.REPLACE-dom.key.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-SCHOOL-KEY
