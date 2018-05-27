@@ -3,7 +3,6 @@
 #
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
-FILLUPDIR       = /usr/share/fillup-templates/
 TOPACKAGE       = Makefile etc setup tools templates README.md
 VERSION         = $(shell test -e ../VERSION && cp ../VERSION VERSION ; cat VERSION)
 RELEASE         = $(shell cat RELEASE )
@@ -16,7 +15,6 @@ install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
 	mkdir -p $(DESTDIR)/etc
 	mkdir -p $(DESTDIR)/$(FILLUPDIR)
-	install -m 644 setup/cephalix   $(DESTDIR)/$(FILLUPDIR)/sysconfig.cephalix
 	rsync -a etc/       $(DESTDIR)/etc/
 	rsync -a tools/     $(SHARE)/tools/
 	rsync -a templates/ $(SHARE)/templates/

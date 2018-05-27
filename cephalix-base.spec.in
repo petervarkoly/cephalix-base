@@ -26,12 +26,6 @@ BuildRequires:  rsync
 #PreReq:
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
-Provides:       openschool-base
-Obsoletes:      openschool-base
-
-%if ! %{defined _fillupdir}
-%define _fillupdir /var/adm/fillup-templates
-%endif
 
 %prep
 %setup -q  -n %{name}
@@ -39,22 +33,24 @@ Obsoletes:      openschool-base
 %build
 
 %install
-make install DESTDIR=%{buildroot} FILLUPDIR=%{_fillupdir} %{?_smp_mflags}
+make install DESTDIR=%{buildroot} %{?_smp_mflags}
 
 %pre
 
 %preun
 
 %post
-%{fillup_only -n cephalix}
 
 %postun
 
 %files
 %defattr(-,root,root)
 /etc/cron.daily/
-/usr/share/cephalix/
-%{_fillupdir}/sysconfig.cephalix
+%dir /usr/share/cephalix
+/usr/share/cephalix/tools/
+/usr/share/cephalix/setup/
+%dir /usr/share/cephalix/templates/
+%config(noreplace) /usr/share/cephalix/templates/*
 %doc README.md
 
 %description

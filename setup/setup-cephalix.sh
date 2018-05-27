@@ -18,8 +18,6 @@ echo     "The internal network of the first server. Several IP-Adresses"
 echo  -n "of the server will be calculated based on this: X.X.X.2, X.X.X.3:"; read NET
 echo  -n "The netmask of the internal network (255.255.0.0):"; read NM
 
-mkdir -p /usr/share/oss/templates/CEPHALIX/
-
 admin=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
 mail=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
 print=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".4" }' )
@@ -28,7 +26,7 @@ backup=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
 anon=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0 " $1 "." $2 "." $3+1 ".15" }' )
 room=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
 
-cat<<EOF > /usr/share/oss/templates/CEPHALIX/Defaults.ini
+cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
 [Defaults]
 CEPHALIX_PATH=/root/CEPHALIX/
 CEPHALIX_DOMAIN=$domain
@@ -61,6 +59,10 @@ REPLACE-SERVER_NET_NM=24
 REPLACE-anon=$anon
 REPLACE-room=$room
 EOF
+
+mkdir -p /root/CEPHALIX/{CA_MGM,configs}
+cp /usr/share/cephalix/setup/create_server_certificates.sh /root/CEPHALIX/
+chmod 750 /root/CEPHALIX/create_server_certificates.sh
 
 /root/CEPHALIX/create_server_certificates.sh -N "CA" -D "$domain" -C $C -S "$STATE" -L "$L" -O "CEPHALIX of $O"
 /root/CEPHALIX/create_server_certificates.sh -N "cephalix" -D "$domain" -C $C -S "$STATE" -L "$L" -O "CEPHALIX of $O"

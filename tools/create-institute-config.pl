@@ -7,8 +7,8 @@ use JSON;
 use Config::IniFiles;
 use Net::Netmask;
 
-my $Defaults = "/usr/share/oss/templates/CEPHALIX/Defaults.ini";
-my $XML      = "/usr/share/oss/templates/CEPHALIX/autoyast-template.xml";
+my $Defaults = "/usr/share/cephalix/templates/Defaults.ini";
+my $XML      = "/usr/share/cephalix/templates/autoyast-template.xml";
 
 my @TO_CLEAN   = qw(
         uuid
@@ -255,7 +255,7 @@ my $BITS            = $block->bits();
 
 
 
-my $XML   = `cat /usr/share/oss/templates/CEPHALIX/autoyast-template.xml`;
+my $XML   = `cat /usr/share/cephalix/templates/autoyast-template.xml`;
 foreach my $par ( $m->Parameters('Defaults') )
 {
         next if contains($par,\@SSL);
