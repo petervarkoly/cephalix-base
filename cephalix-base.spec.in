@@ -46,6 +46,7 @@ make install DESTDIR=%{buildroot} %{?_smp_mflags}
 %files
 %defattr(-,root,root)
 /etc/cron.daily/
+/etc/salt/master.d/
 %dir /usr/share/cephalix
 /usr/share/cephalix/tools/
 /usr/share/cephalix/setup/
