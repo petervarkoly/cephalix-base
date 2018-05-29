@@ -83,6 +83,15 @@ nobind
 ]]></file_contents>
     </config_file>
     <config_file>
+      <file_path>/etc/salt/minion.d/cephalix.conf</file_path>
+      <file_owner>root:root</file_owner>
+      <file_permissions>644</file_permissions>
+      <file_contents><![CDATA[master: zadmin
+id: admin.REPLACE-dom
+]]></file_contents>
+    </config_file>
+    <config_file>
+    <config_file>
       <file_path>/root/.ssh/authorized_keys</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>600</file_permissions>
@@ -1283,6 +1292,7 @@ close(FILE);
         <filename>make-dir.sh</filename>
         <source><![CDATA[
 mkdir -p /mnt/etc/ssl/servercerts/certs
+mkdir -p /mnt/etc/salt/minion.d
 ]]></source>
       </script>
     </chroot-scripts>
@@ -1303,22 +1313,19 @@ LABEL_proxy='proxy'
 
 rcnetwork restart
 echo -n 'REPLACE-PW' > /root/passwd
+echo -n 'REPLACE-CEPHALIX-PW' > /root/cephalixpw
 chmod 600 /root/passwd
-
-sleep 10
 sed -i s/DHCPD_INTERFACE=""/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
-/usr/share/oss/setup/oss_setup.pl --dhcp --dns --mail --samba --proxy --accounts --debug --ldappasswd=/root/passwd
+/usr/share/oss/setup/scripts/oss-setup.sh --passwdf=/tmp/passwd --cephalixpw=/root/cephalixpw --samba
+sleep 5
+/usr/share/oss/setup/scripts/oss-setup.sh --passwdf=/tmp/passwd --cephalixpw=/root/cephalixpw --accounts --dhcp --postsetup
 echo 'REPLACE-zadmin zadmin' >> /etc/hosts
-
-#Adapt APACHE configuration
 
 #Allow Cephalix all access
 sed -i 's/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS="REPLACE-zadmin REPLACE-CEPHALIX"/' /etc/sysconfig/SuSEfirewall2
 
-REPLACE-CEPHALIX-PW
-
 #Install some late packages:
-zypper -n install oss-clone oss-clax oss-nagios nagios-nrpe
+zypper -n install oss-clone oss-proxy
 
 #Activate some services
 chkconfig nagios on
@@ -1351,12 +1358,15 @@ chown nagios /var/lib/nagios
       <pacakge>mariadb-client</pacakge>
       <pacakge>mariadb-errormessages</pacakge>
       <package>oss-base</package>
+      <package>oss-java</package>
+      <package>oss-web</package>
       <package>salt</package>
       <package>salt</package>
       <package>salt-api</package>
       <package>salt-bash-completion</package>
       <package>salt-doc</package>
       <package>salt-master</package>
+      <package>salt-minion</package>
       <package>tftp</package>
       <package>vsftpd</package>
       <package>xinetd</package>
@@ -1377,6 +1387,7 @@ chown nagios /var/lib/nagios
         <service>salt</service>
         <service>salt-master</service>
         <service>salt-api</service>
+        <service>salt-minion</service>
         <service>sshd</service>
       </enable>
     </services>
