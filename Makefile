@@ -18,6 +18,7 @@ install:
 	rsync -a etc/       $(DESTDIR)/etc/
 	rsync -a tools/     $(SHARE)/tools/
 	rsync -a templates/ $(SHARE)/templates/
+	rsync -a setup/     $(SHARE)/setup/
 
 dist:
 	if [ -e $(PACKAGE) ] ;  then rm -rf $(PACKAGE) ; fi   
