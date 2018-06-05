@@ -7,9 +7,9 @@ echo  -n "Country code (DE,EN ..): "; read C
 echo  -n "      State//Bundesland: "; read STATE
 echo  -n "             City/Stadt: "; read L
 echo  -n "The name of your organisation: "; read O
-echo     "The IP Address of CEPHALIX server from which the servers will be connected: ";
+echo     "The IP Address of CEPHALIX server from which the servers will be connected.";
 echo  -n "If the servers will be connected  via VPN this is  the VPN-tunnel  address: "; read zadmin
-echo     "The official IP Addres or DNS name of the CEPHALIX. "
+echo     "The official IP Addres or DNS name of the CEPHALIX."
 echo  -n "This is only  required for the VPN connections.: "; read CEPHALIX
 echo  -n "Standard IP address in transport network for the servers: "; read trip
 echo  -n "Standard netmask  in transport network for the servers: "; read trnm
@@ -44,7 +44,7 @@ REPLACE-PW=
 REPLACE-WORKGROUP=
 REPLACE-CEPHALIX=$CEPHALIX
 REPLACE-TRIP=$trip
-REPLACE-TRNM=$trn
+REPLACE-TRNM=$trnm
 REPLACE-GW=$trgw
 REPLACE-NET=$NET
 REPLACE-NM=$NM
