@@ -1347,6 +1347,7 @@ chown nagios /var/lib/nagios
     <packages config:type="list">
       <package>at</package>
       <package>apache2</package>
+      <package>cephalix-client</package>
       <package>dhcp-server</package>
       <package>icinga2</package>
       <package>icingaweb2</package>
