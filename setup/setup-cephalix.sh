@@ -7,9 +7,9 @@ echo  -n "Country code (DE,EN ..): "; read C
 echo  -n "       State/Bundesland: "; read STATE
 echo  -n "             City/Stadt: "; read locality
 echo  -n "The name of your organisation: "; read O
-echo     "The IP Address of CEPHALIX server from which the servers will be connected: ";
+echo     "The IP Address of CEPHALIX server from which the servers will be connected.";
 echo  -n "If the servers will be connected  via VPN this is  the VPN-tunnel  address: "; read zadmin
-echo     "The official IP Addres or DNS name of the CEPHALIX. "
+echo     "The official IP Addres or DNS name of the CEPHALIX."
 echo  -n "This is only  required for the VPN connections.: "; read CEPHALIX
 echo  -n "The VPN IP-Adress of the first server: "; read ipVPN
 echo  -n "Standard IP address in transport network for the servers: "; read ipTrNet
@@ -60,6 +60,28 @@ CEPHALIX_PATH=/root/CEPHALIX/
 CEPHALIX_DOMAIN=$DOMAIN
 VPN_IP=10.255.0.8
 REPLACE-zadmin=$zadmin
+REPLACE-L=$L
+REPLACE-STATE=$STATE
+REPLACE-LANGUAGE=$C
+REPLACE-CCODE"=$C
+REPLACE-sn=
+REPLACE-CN=
+REPLACE-type=
+REPLACE-dom=
+REPLACE-PW=
+REPLACE-WORKGROUP=
+REPLACE-CEPHALIX=$CEPHALIX
+REPLACE-TRIP=$trip
+REPLACE-TRNM=$trnm
+REPLACE-GW=$trgw
+REPLACE-NET=$NET
+REPLACE-NM=$NM
+REPLACE-NET-GW=$admin
+REPLACE-admin=$admin
+REPLACE-mail=$mail
+REPLACE-print=$print
+REPLACE-proxy=$proxy
+REPLACE-backup=$backup
 REPLACE-ntp=ptbtime1.ptb.de
 REPLACE-SERVER_NET_NM=24
 REPLACE-CEPHALIX=$CEPHALIX
