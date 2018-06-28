@@ -3,12 +3,12 @@
 
 use strict;
 use Data::Dumper;
-use JSON;
+use JSON::XS;
 use Config::IniFiles;
 use Net::Netmask;
 
 my $Defaults = "/usr/share/cephalix/templates/Defaults.ini";
-my $XML      = "/usr/share/cephalix/templates/autoyast-template.xml";
+my $XMLFile  = "/usr/share/cephalix/templates/autoyast-template.xml";
 
 my @TO_CLEAN   = qw(
         uuid
@@ -16,22 +16,11 @@ my @TO_CLEAN   = qw(
         type
         domain
         adminPW
-        );
+);
 
-#{
-#"id": 0,
-#"uuid": "string",
-#"cephalixPW": "string",
-#"ipVPN": "string",
-#"locality": "string",
-#"nmServerNet": "string",
-#"deleted": "string",
-#"recDate": "2018-05-26T14:28:20.088Z",
-#}
-
-
-my %VARMAP {
-        'REPLACE-CEPHALIX-PW' => 'adminPW',
+my $VARMAP  = {
+        'REPLACE-CPW' => 'cephalixPW',
+        'REPLACE-sn' => 'uuid',
         'REPLACE-CN' => 'name',
         'REPLACE-GW' => 'gwTrNet',
         'REPLACE-NET' => 'network',
@@ -50,6 +39,9 @@ my %VARMAP {
         'REPLACE-proxy' => 'ipProxy',
         'REPLACE-room' => 'firstRoom',
         'REPLACE-type' => 'type',
+        'REPLACE-STATE' => 'state',
+	uuid	=> 'REPLACE-sn',
+	name    => 'REPLACE-CN',
 	ipAdmin	=> 'REPLACE-admin',
 	ipMail	=> 'REPLACE-mail',
 	ipPrint	=> 'REPLACE-print',
@@ -58,7 +50,7 @@ my %VARMAP {
 	network	=> 'REPLACE-NET',
 	netmask => 'REPLACE-NM',
 	anonDhcp=> 'REPLACE-anon-net',
-	firstRoom=> 'REPLACE-room'
+	firstRoom=> 'REPLACE-room',
 	ipTrNet	=> 'REPLACE-TRIP',
 	nmTrNet	=> 'REPLACE-TRNM',
 	gwTrNet => 'REPLACE-GW',
@@ -66,15 +58,16 @@ my %VARMAP {
 	type	=> 'REPLACE-type',
 	registrationsCode => 'REPLACE-REGCODE',
 	adminPW => 'REPLACE-PW',
-	cephalixPW=>'REPLACE-CEPHALIX-PW'
-}
+	cephalixPW=>'REPLACE-CPW',
+	sate	=> 'REPLACE-STATE'
+};
 
 my @VARS   = qw(
 	REPLACE-ADMIN-CERT
 	REPLACE-ADMIN-KEY
 	REPLACE-CA-CERT
 	REPLACE-CEPHALIX
-	REPLACE-CEPHALIX-PW
+	REPLACE-CPW
 	REPLACE-CN
 	REPLACE-GW
 	REPLACE-NET
@@ -103,6 +96,7 @@ my @VARS   = qw(
 	REPLACE-print
 	REPLACE-proxy
 	REPLACE-room
+	REPLACE-sn
 	REPLACE-type
 	REPLACE-zadmin
 );
@@ -162,12 +156,13 @@ while(<STDIN>) {
 
 my $reply = decode_json($hash);
 my $TASK      =`uuidgen -t`; chomp $TASK;
-
-write_file("/var/adm/oss/opentasks/$TASK",$reply);
+system("mkdir -p /var/adm/oss/opentasks/");
+write_file("/var/adm/oss/opentasks/$TASK",$hash);
 
 my $default  = new Config::IniFiles( -file => $Defaults );
 my $CEPHALIX_PATH   = $default->val('Defaults','CEPHALIX_PATH');
 my $CEPHALIX_DOMAIN = $default->val('Defaults','CEPHALIX_DOMAIN');
+my $SAVE_NEXT = ( $default->val('Defaults','SAVE_NEXT') eq "yes" ) ? 1 : 0;
 my $path = $CEPHALIX_PATH.'/configs/'.$reply->{"uuid"}.".ini";
 system("mkdir -p $CEPHALIX_PATH/configs/");
 system("cp $Defaults $path");
@@ -178,11 +173,19 @@ foreach my $v ( @VARS )
         next if defined $READONLY->{$v};
         if (defined $m->val('Defaults',$v) )
         {
-                $m->setval('Defaults',$v,$reply->{$VARMAP{$v}});
+		if( defined $reply->{$VARMAP->{$v}} ) {
+               $m->setval('Defaults',$v,$reply->{$VARMAP->{$v}});
+		} else {
+			print STDERR "There is no new value for $v\n";
+		}
         }
         else
         {
-                $m->newval('Defaults',$v,$reply->{$VARMAP{$v}});
+		if( defined $reply->{$VARMAP->{$v}} ) {
+               $m->newval('Defaults',$v,$reply->{$VARMAP->{$v}});
+		} else {
+			print STDERR "There is no value for $v\n";
+		}
         }
 }
 foreach my $v ( keys(%$READONLY) )
@@ -197,7 +200,7 @@ foreach my $v ( keys(%$READONLY) )
         }
 }
 $m->RewriteConfig();
-if( $reply->{"savenextnet"} )
+if( $SAVE_NEXT )
 {
         my $block = new Net::Netmask($reply->{"network"}."/".$reply->{"netmask"});
         my $next  = $block->next();
@@ -230,22 +233,26 @@ foreach my $v ( @TO_CLEAN )
 }
 $default->RewriteConfig();
 if( ! -e "$CEPHALIX_PATH/CA_MGM/certs/admin.".$reply->{"domain"}.".key.pem" ) {
-        my $command = "$CEPHALIX_PATH/create_server_certificates.sh -P $CEPHALIX_PATH -N";
-        system("$command 'schooladmin'  -D '".$reply->{'domain'}."'  -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."'");
-        system("$command 'admin'        -D '".$reply->{'domain'}."'  -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."'");
-        system("$command 'schoolserver' -D '".$reply->{'domain'}."'  -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."'");
-        system("$command '".$reply->{'uuid'}."' -D '$CEPHALIX_DOMAIN' -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."' -s");
+        my $command = "$CEPHALIX_PATH/create_server_certificates.sh -P $CEPHALIX_PATH -O '".$reply->{'name'};
+	if( defined $reply->{'state'} ) {
+		$command .= "'  -S '".$reply->{'state'}."'";
+	}
+	if( defined $reply->{'locality'} ) {
+		$command .= "'  -S '".$reply->{'locality'}."'";
+	}
+        system("$command -D '".$reply->{'domain'}."' -N 'schooladmin'");
+        system("$command -D '".$reply->{'domain'}."' -N 'admin'");
+        system("$command -D '".$reply->{'domain'}."' -N 'schoolserver'");
+        system("$command -D '$CEPHALIX_DOMAIN' -N '".$reply->{'uuid'}."' -s");
         #Debug the commands
-        print("$command 'schooladmin'  -D '".$reply->{'domain'}."'  -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."'\n");
-        print("$command 'admin'        -D '".$reply->{'domain'}."'  -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."'\n");
-        print("$command 'schoolserver' -D '".$reply->{'domain'}."'  -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."'\n");
-        print("$command '".$reply->{'uuid'}."' -D '$CEPHALIX_DOMAIN' -S '".$reply->{'state'}."' -L '".$reply->{'locality'}."' -O '".$reply->{'name'}."' -s\n");
+        print("$command -D '".$reply->{'domain'}."' -N 'schooladmin'\n");
+        print("$command -D '".$reply->{'domain'}."' -N 'admin'\n");
+        print("$command -D '".$reply->{'domain'}."' -N 'schoolserver'\n");
+        print("$command -D '$CEPHALIX_DOMAIN' -N '".$reply->{'uuid'}."' -s\n");
 }
 
 #Create autoyast config
 
-my $CEPHALIX_PATH   = $m->val('Defaults','CEPHALIX_PATH');
-my $CEPHALIX_DOMAIN = $m->val('Defaults','CEPHALIX_DOMAIN');
 my $SCHOOL_DOMAIN   = $m->val('Defaults','REPLACE-dom');
 my $SCHOOL_sn       = $m->val('Defaults','REPLACE-sn');
 my $SCHOOL_NET      = $m->val('Defaults','REPLACE-NET');
@@ -253,9 +260,12 @@ my $SCHOOL_NM       = $m->val('Defaults','REPLACE-NM');
 my $block           = new Net::Netmask("$SCHOOL_NET/$SCHOOL_NM");
 my $BITS            = $block->bits();
 
-
-
-my $XML   = `cat /usr/share/cephalix/templates/autoyast-template.xml`;
+if( -e "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml"  )  {
+	$XMLFile = "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml";
+} elsif( -e "/usr/share/cephalix/templates/autoyast-template-".$reply->{'type'}.".xml"  )  {
+	$XMLFile = "/usr/share/cephalix/templates/autoyast-template-".$reply->{'type'}.".xml";
+}
+my $XML   = `cat $XMLFile`;
 foreach my $par ( $m->Parameters('Defaults') )
 {
         next if contains($par,\@SSL);
@@ -277,5 +287,13 @@ foreach my $sslpar ( @SSL )
 {
         $XML =~ s/$sslpar/$SSLVARS{$sslpar}/g;
 }
-write_file("$CEPHALIX_PATH/configs/$SCHOOL_sn.xml",$XML);
+system("mkdir -p /srv/www/admin/configs/");
+write_file("/srv/www/admin/configs/$SCHOOL_sn.xml",$XML);
 
+my $tmpDir   = `mktemp /tmp/mkisoXXXXX`; chomp $tmpDir;
+my $createCD = "cp /srv/www/admin/configs/$SCHOOL_sn.xml /usr/share/cephalix/templates/iso/oss.xml;\n".
+	       "mkisofs --publisher 'Dipl.Ing. Peter Varkoly' -p 'CD-Team, http://www.cephalix.eu' ".
+	       "-r -J -f -pad -no-emul-boot -boot-load-size 4 -boot-info-table -b boot/x86_64/loader/isolinux.bin ".
+               "-c boot/boot.catalog -hide boot/boot.catalog -hide-joliet boot/boot.catalog -A - -V SU.001 -o /srv/www/admin/isos/$SCHOOL_sn.iso $tmpDir /usr/share/cephalix/templates/iso/";
+
+system($createCD);
