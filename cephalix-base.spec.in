@@ -22,7 +22,6 @@ Source:         %{name}.tar.bz2
 BuildArch:      noarch
 PreReq:         filesystem
 Requires:       rsync
-Requires:       perl-Config-IniFiles
 Requires:       perl-JSON-XS
 Requires:       mkisofs
 BuildRequires:  rsync
