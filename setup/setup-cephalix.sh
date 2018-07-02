@@ -12,6 +12,7 @@ echo  -n "If the servers will be connected  via VPN this is  the VPN-tunnel  add
 echo     "The official IP Addres or DNS name of the CEPHALIX."
 echo  -n "This is only  required for the VPN connections.: "; read CEPHALIX
 echo  -n "The VPN IP-Adress of the first server: "; read ipVPN
+echo  -n "IP address of the ntp server: "; read ipNTP
 echo  -n "Standard IP address in transport network for the servers: "; read ipTrNet
 echo  -n "Standard netmask  in transport network for the servers: "; read nmTrNet
 echo  -n "Standard gateway in transport network for the servers: "; read gwTrNet
@@ -29,14 +30,22 @@ firstRoom=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
 
 cat<<EOF > /tmp/initial-school
 {
-  "id": 1,
-  "uuid": "template",
+  "CEPHALIX_PATH":"/root/CEPHALIX/"
+  "CEPHALIX_DOMAIN":"$DOMAIN"
+  "VPN_IP":"10.255.0.8"
+  "NTP":"$ipNTP"
+  "CEPHALIX":"$CEPHALIX"
+  "ZADMIN":"$zadmin"
+  "STATE":"$STATE"
+  "LANGUAGE":"$C"
+  "CCODE"":"$C"
   "adminPW": "",
   "anonDhcp": "$anonDhcp",
   "cephalixPW": "",
   "domain": "",
   "firstRoom": "$firstRoom",
   "gwTrNet": "$gwTrNet",
+  "id": 1,
   "ipAdmin": "$ipAdmin",
   "ipBackup": "$ipBackup",
   "ipMail": "$ipMail",
@@ -50,52 +59,16 @@ cat<<EOF > /tmp/initial-school
   "network": "$network",
   "nmServerNet": "255.255.255.0",
   "nmTrNet": "$nmTrNet",
-  "type": "string",
   "regCode": "string"
+  "type": "string",
+  "uuid": "template",
 }
 EOF
-
-cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
-CEPHALIX_PATH=/root/CEPHALIX/
-CEPHALIX_DOMAIN=$DOMAIN
-VPN_IP=10.255.0.8
-REPLACE-zadmin=$zadmin
-REPLACE-L=$L
-REPLACE-STATE=$STATE
-REPLACE-LANGUAGE=$C
-REPLACE-CCODE"=$C
-REPLACE-sn=
-REPLACE-CN=
-REPLACE-type=
-REPLACE-dom=
-REPLACE-PW=
-REPLACE-WORKGROUP=
-REPLACE-CEPHALIX=$CEPHALIX
-REPLACE-TRIP=$trip
-REPLACE-TRNM=$trnm
-REPLACE-GW=$trgw
-REPLACE-NET=$NET
-REPLACE-NM=$NM
-REPLACE-NET-GW=$admin
-REPLACE-admin=$admin
-REPLACE-mail=$mail
-REPLACE-print=$print
-REPLACE-proxy=$proxy
-REPLACE-backup=$backup
-REPLACE-ntp=ptbtime1.ptb.de
-REPLACE-SERVER_NET_NM=24
-REPLACE-CEPHALIX=$CEPHALIX
-REPLACE-LANGUAGE=$C
-REPLACE-CCODE=$C
-REPLACE-STATE=$STATE
-EOF
-
-TOKEN=$( grep de.openschoolserver.api.auth.localhost= /opt/oss-java/conf/oss-api.properties | sed 's/de.openschoolserver.api.auth.localhost=//' )
-curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d @/tmp/initial-school --header 'Authorization: Bearer '${TOKEN} "http://localhost:9080/api/institutes/add"
 
 mkdir -p /root/CEPHALIX/{CA_MGM,configs}
 cp /usr/share/cephalix/setup/create_server_certificates.sh /root/CEPHALIX/
 chmod 750 /root/CEPHALIX/create_server_certificates.sh
+mkdir -p /srv/www/htdocs/admin/{configs,isos}
 
 /root/CEPHALIX/create_server_certificates.sh -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 /root/CEPHALIX/create_server_certificates.sh -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
