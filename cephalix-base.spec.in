@@ -21,9 +21,10 @@ Group:          Productivity/
 Source:         %{name}.tar.bz2
 BuildArch:      noarch
 PreReq:         filesystem
-Requires:       rsync
-Requires:       perl-JSON-XS
 Requires:       mkisofs
+Requires:       perl-JSON-XS
+Requires:	perl-Net-Netmask
+Requires:       rsync
 BuildRequires:  rsync
 #PreReq:
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -46,13 +47,14 @@ make install DESTDIR=%{buildroot} %{?_smp_mflags}
 %postun
 
 %files
-%defattr(-,root,root)
+%defattr(750,root,root)
+/usr/share/cephalix/tools/
+/usr/share/cephalix/setup/
 /etc/cron.daily/
+%defattr(-,root,root)
 %dir /etc/salt/
 /etc/salt/master.d/
 %dir /usr/share/cephalix
-/usr/share/cephalix/tools/
-/usr/share/cephalix/setup/
 %dir /usr/share/cephalix/templates/
 %config(noreplace) /usr/share/cephalix/templates/*
 %doc README.md

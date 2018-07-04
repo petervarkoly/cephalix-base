@@ -144,6 +144,10 @@ my $SCHOOL_NM       = $reply->{'netmask'};
 my $block           = new Net::Netmask("$SCHOOL_NET/$SCHOOL_NM");
 my $BITS            = $block->bits();
 
+# In 4.0 it was changed:
+$reply->{'netmask'}       = $block->bits();
+$reply->{'netmaskString'} = $block->mask();
+
 if( -e "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml"  )  {
 	$XMLFile = "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml";
 } elsif( -e "/usr/share/cephalix/templates/autoyast-template-".$reply->{'type'}.".xml"  )  {
@@ -156,7 +160,6 @@ foreach my $par ( keys %{$reply} )
 	my $ph  = '###'.$par.'###';
         $XML =~ s/$ph/$val/g;
 }
-$XML =~ s/###BIT###/$BITS/g;
 
 $SSLVARS{'REPLACE-SSHKEY'}     = `cat /root/.ssh/id_dsa.pub`;
 $SSLVARS{'REPLACE-CA-CERT'}    = `cat $CEPHALIX_PATH/CA_MGM/cacert.pem`;
@@ -171,7 +174,7 @@ foreach my $sslpar ( @SSL )
 {
         $XML =~ s/$sslpar/$SSLVARS{$sslpar}/g;
 }
-system("mkdir -p /srv/www/admin/configs/");
+system("mkdir -p /srv/www/admin/{configs,isos}");
 write_file("/srv/www/admin/configs/$SCHOOL_sn.xml",$XML);
 write_file($Defaults,encode_json($default));
 

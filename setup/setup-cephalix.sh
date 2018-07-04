@@ -28,7 +28,7 @@ ipBackup=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
 anonDhcp=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0 " $1 "." $2 "." $3+1 ".15" }' )
 firstRoom=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
 
-cat<<EOF > /tmp/initial-school
+cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
 {
   "CEPHALIX_PATH":"/root/CEPHALIX/"
   "CEPHALIX_DOMAIN":"$DOMAIN"
@@ -70,6 +70,6 @@ cp /usr/share/cephalix/setup/create_server_certificates.sh /root/CEPHALIX/
 chmod 750 /root/CEPHALIX/create_server_certificates.sh
 mkdir -p /srv/www/htdocs/admin/{configs,isos}
 
-/root/CEPHALIX/create_server_certificates.sh -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
-/root/CEPHALIX/create_server_certificates.sh -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
+/root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
+/root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 

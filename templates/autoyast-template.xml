@@ -259,14 +259,14 @@ SCHOOL_MAILSERVER="###ipMail###"
 SCHOOL_NAME="###name###"
 
 ## Type:	string readonly
-## Default:	"255.255.0.0"
+## Default:	"16"
 # Network Mask of the internal network.
 SCHOOL_NETMASK="###netmask###"
 
 ## Type:        string readonly
 ## Default:     "255.255.0.0"
 # Network Mask of the internal network.
-SCHOOL_NETMASK_STRING="###netmask###-STRING"
+SCHOOL_NETMASK_STRING="###netmaskString###"
 
 ## Type:	string readonly
 ## Default:	"172.16.0.0"
@@ -276,7 +276,7 @@ SCHOOL_NETWORK="###network###"
 ## Type:	string readonly
 ## Default:	
 # The default gateway for the internal net, not for the server.
-SCHOOL_NET_GATEWAY="###network###-GW"
+SCHOOL_NET_GATEWAY="###ipGateway###"
 
 ## Type:	string readonly
 ## Default:	"172.16.0.4"
@@ -543,7 +543,7 @@ pubmed.gov
         <bootproto>static</bootproto>
         <device>eth0</device>
         <ipaddr>###ipAdmin###</ipaddr>
-        <netmask>###netmask###</netmask>
+        <netmask>###netmaskString###</netmask>
         <startmode>onboot</startmode>
       </interface>
       <interface>
@@ -945,11 +945,11 @@ mkdir -p /mnt/etc/ssl/servercerts/certs
         <debug config:type="boolean">true</debug>
         <filename>init-setup.sh</filename>
         <source><![CDATA[#!/bin/sh
-echo "IPADDR_mail='###ipMail###/###BIT###'
+echo "IPADDR_mail='###ipMail###/###netmask###'
 LABEL_mail='mail'
-IPADDR_print='###ipPrint###/###BIT###'
+IPADDR_print='###ipPrint###/###netmask###'
 LABEL_print='print'
-IPADDR_proxy='###ipProxy###/###BIT###'
+IPADDR_proxy='###ipProxy###/###netmask###'
 LABEL_proxy='proxy'
  " >> /etc/sysconfig/network/ifcfg-eth0
 
