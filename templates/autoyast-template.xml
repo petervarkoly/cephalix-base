@@ -964,7 +964,11 @@ sed -i s/DHCPD_INTERFACE=""/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
 /usr/share/oss/setup/scripts/oss-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --accounts --dhcp --postsetup
 
-echo '###ZADMIN### zadmin' >> /etc/hosts
+echo '###ipAdmin###	admin.###domain### admin
+###ipMail###	mailserver.###domain### mailserver
+###ipPrint###	printserver.###domain### printserver
+###ipProxy###	proxy.###domain### proxy
+###ZADMIN### zadmin' >> /etc/hosts
 
 #Adapt APACHE configuration
 
