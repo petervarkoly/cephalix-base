@@ -726,7 +726,7 @@ pubmed.gov
     </drive>
   </partitioning>
   <scripts>
-    <pre-scripts>
+    <pre-scripts config:type="list">
       <script>
         <feedback config:type="boolean">false</feedback>
         <debug config:type="boolean">true</debug>
@@ -938,8 +938,6 @@ mkdir -p /mnt/etc/ssl/servercerts/certs
 ]]></source>
       </script>
     </chroot-scripts>
-    <post-scripts config:type="list">
-    </post-scripts>
     <init-scripts config:type="list">
       <script>
         <debug config:type="boolean">true</debug>
