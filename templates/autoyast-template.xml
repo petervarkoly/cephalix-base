@@ -530,7 +530,7 @@ pubmed.gov
       <dhcp_hostname config:type="boolean">false</dhcp_hostname>
       <dhcp_resolv config:type="boolean">false</dhcp_resolv>
       <domain>###domain###</domain>
-      <hostname>schooladmin</hostname>
+      <hostname>admin</hostname>
       <nameservers config:type="list">
         <nameserver>127.0.0.1</nameserver>
       </nameservers>
