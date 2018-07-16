@@ -5,6 +5,11 @@ use strict;
 use Data::Dumper;
 use JSON::XS;
 use Net::Netmask;
+use Encode qw(encode decode);
+binmode STDIN,  ":encoding(UTF-8)";
+binmode STDOUT, ":encoding(UTF-8)";
+binmode STDERR, ":encoding(UTF-8)";
+use utf8;
 
 my $Defaults = "/usr/share/cephalix/templates/Defaults.ini";
 my $XMLFile  = "/usr/share/cephalix/templates/autoyast-template.xml";
@@ -19,9 +24,12 @@ my @TO_CLEAN   = qw(
 
 my $READONLY   = {
         "CEPHALIX" => 1,
-        "ZADMIN"   => 1,
         "CEPHALIX_PATH"    => 1,
-        "CEPHALIX_DOMAIN"  => 1
+        "CEPHALIX_DOMAIN"  => 1,
+	"CCODE" => 1,
+	"LANGUAGE" => 1,
+	"NTP" => 1,
+        "ZADMIN"   => 1
 };
 
 my @SSL = qw(
@@ -43,6 +51,39 @@ my $hash = "";
 
 #############################################
 # Some helper functions
+
+sub hash_to_json($) {
+    my $hash = shift;
+    my $json = '{';
+    foreach my $key ( keys %{$hash} ) {
+        my $value = $hash->{$key};
+        $json .= '"'.$key.'":';
+        if( $value eq 'true' ) {
+       $json .= 'true,';
+        } elsif ( $value eq 'false' ) {
+       $json .= 'false,';
+        } elsif ( $value =~ /^\d+$/ ) {
+       $json .= $value.',';
+        } else {
+                $value =~ s/"/\\"/g;
+                $json .= '"'.$value.'",';
+        }
+    }
+    $json =~ s/,$//;
+    $json .= '}';
+}
+
+sub convert_json_to_hash($)
+{
+   my $res = shift;
+   $res =~ s/:false/:0/g;
+   $res =~ s/:true/:1/g;
+   $res =~ s/:null/:""/g;
+   $res =~ s/":/"=>/g;
+   return eval($res);
+}
+
+
 sub contains {
     my $a = shift;
     my $b = shift;
@@ -59,21 +100,38 @@ sub write_file($$) {
   my $out  = shift;
   local *F;
   open F, ">$file" || die "Couldn't open file '$file' for writing: $!; aborting";
+  binmode F, ':encoding(utf8)';
   local $/ unless wantarray;
   print F $out;
   close F;
 }
+
+sub get_file($) {
+    my $file     = shift;
+    return undef if( ! -e $file );
+    my $content  = '';
+    local *F;
+    open F, $file || return undef;
+    binmode F, ':encoding(utf8)';
+    while( <F> )
+    {
+       $content .= $_;
+    }
+    return $content;
+}
+
+
 #
 #############################################
 
 while(<STDIN>) {
    $hash .= $_;
 }
-
-my $reply = decode_json($hash);
 my $TASK      =`uuidgen -t`; chomp $TASK;
 system("mkdir -p /var/adm/oss/opentasks/");
 write_file("/var/adm/oss/opentasks/$TASK",$hash);
+
+my $reply = convert_json_to_hash($hash);
 
 my $default  = decode_json(`cat $Defaults`);
 my $CEPHALIX_PATH   = $default->{'CEPHALIX_PATH'};
@@ -139,14 +197,25 @@ if( ! -e "$CEPHALIX_PATH/CA_MGM/certs/admin.".$reply->{"domain"}.".key.pem" ) {
 
 my $SCHOOL_DOMAIN   = $reply->{'domain'};
 my $SCHOOL_sn       = $reply->{'uuid'};
-my $SCHOOL_NET      = $reply->{'network'};
-my $SCHOOL_NM       = $reply->{'netmask'};
-my $block           = new Net::Netmask("$SCHOOL_NET/$SCHOOL_NM");
+my $block           = new Net::Netmask($reply->{'network'});
 my $BITS            = $block->bits();
 
 # In 4.0 it was changed:
+my $SCHOOL_NM             = $block->mask();
 $reply->{'netmask'}       = $block->bits();
 $reply->{'netmaskString'} = $block->mask();
+my $dhcpBlock           = new Net::Netmask($reply->{'anonDhcpNetwork'});
+my $dhcpLast = $dhcpBlock->broadcast();
+if( $dhcpBlock->broadcast() eq $block->broadcast() ) {
+   my @tmp  = split /\./, $dhcpBlock->broadcast();
+   $dhcpLast = $tmp[0].'.'.$tmp[1].'.'.$tmp[2].'.'.( $tmp[3] - 1 );
+}
+
+$reply->{'anonDhcpRange'} = $dhcpBlock->base()." ".$dhcpLast;
+
+# Evaluate WORKGROUP
+my @ltmp = split /\./, $reply->{'domain'};
+$reply->{'WORKGROUP'} = uc($ltmp[0]);
 
 if( -e "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml"  )  {
 	$XMLFile = "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml";
@@ -157,6 +226,7 @@ my $XML   = `cat $XMLFile`;
 foreach my $par ( keys %{$reply} )
 {
         my $val = $reply->{$par};
+	Encode::_utf8_on($val);
 	my $ph  = '###'.$par.'###';
         $XML =~ s/$ph/$val/g;
 }
@@ -176,7 +246,7 @@ foreach my $sslpar ( @SSL )
 }
 system("mkdir -p /srv/www/admin/{configs,isos}");
 write_file("/srv/www/admin/configs/$SCHOOL_sn.xml",$XML);
-write_file($Defaults,encode_json($default));
+write_file($Defaults,hash_to_json($default));
 
 my $apache = "        ProxyPass          /$SCHOOL_sn http://".$reply->{'ipVPN'}."/api
         ProxyPassReverse   /$SCHOOL_sn http://".$reply->{'ipVPN'}."/api

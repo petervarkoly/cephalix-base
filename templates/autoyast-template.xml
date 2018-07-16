@@ -221,12 +221,12 @@ SCHOOL_SORT_HOMES="yes"
 ## Type:        string readonly
 ## Default:     "172.28.1.0/24"
 # IP-network for new and not registered clients.
-SCHOOL_ANON_DHCP_NET="###anonDhcp###-net"
+SCHOOL_ANON_DHCP_NET="###anonDhcpNetwork###"
 
 ## Type:	string readonly
 ## Default:	"172.16.1.1 172.16.1.25"
 # IP-address range for new and not registered clients.
-SCHOOL_ANON_DHCP_RANGE="###anonDhcp###"
+SCHOOL_ANON_DHCP_RANGE="###anonDhcpRange###"
 
 ## Type:	string readonly
 ## Default:	172.16.2.0
@@ -316,7 +316,7 @@ SCHOOL_SERVER_EXT_NETMASK="###nmTrNet###"
 ## Type:	string readonly
 ## Default:	"172.16.0.0/24"
 # The OSS server networks network address.
-SCHOOL_SERVER_NET="###network###/###nmServerNet###"
+SCHOOL_SERVER_NET="###serverNetwork###"
 
 ## Type:	yesno readonly
 ## Default:	no
@@ -431,7 +431,7 @@ SCHOOL_MAIL_TEACHER_QUOTA="25"
 ## Type:	string
 ## Default:	
 # The registration code of the OSS.
-SCHOOL_REG_CODE="###registrationsCode###"
+SCHOOL_REG_CODE="###regCode###"
 
 ## Type:	yesno
 ## Default:	no
@@ -971,22 +971,20 @@ echo '###ZADMIN### zadmin' >> /etc/hosts
 #Adapt APACHE configuration
 
 #Allow Cephalix all access
-sed -i 's/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS="zadmin #CEPHALIX#"/' /etc/sysconfig/SuSEfirewall2
+sed -i 's/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS="zadmin ###CEPHALIX###"/' /etc/sysconfig/SuSEfirewall2
 
 #Configure Cephalix Access for Apache2
 sed -i 's/connectip/###ipVPN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 sed -i 's/zadminip/###ZADMIN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 #Install some late packages:
-zypper -n install oss-clone oss-clax oss-nagios nagios-nrpe
+zypper -n install oss-clone oss-proxy openvpn
 
 #Activate some services
-chkconfig nagios on
-chkconfig nrpe on
-chkconfig openvpn on
-rcopenvpn start
+for i in $( cat /usr/share/oss/setup/services-to-enable )
+do
+    systemctl enable $i
+done
 
-#Some correctures
-chown nagios /var/lib/nagios
 
 ]]></source>
       </script>

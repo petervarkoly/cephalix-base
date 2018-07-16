@@ -30,15 +30,15 @@ firstRoom=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
 
 cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
 {
-  "CEPHALIX_PATH":"/root/CEPHALIX/"
-  "CEPHALIX_DOMAIN":"$DOMAIN"
-  "VPN_IP":"10.255.0.8"
-  "NTP":"$ipNTP"
-  "CEPHALIX":"$CEPHALIX"
-  "ZADMIN":"$zadmin"
-  "STATE":"$STATE"
-  "LANGUAGE":"$C"
-  "CCODE"":"$C"
+  "CEPHALIX_PATH":"/root/CEPHALIX/",
+  "CEPHALIX_DOMAIN":"$DOMAIN",
+  "VPN_IP":"10.255.0.8",
+  "NTP":"$ipNTP",
+  "CEPHALIX":"$CEPHALIX",
+  "ZADMIN":"$zadmin",
+  "STATE":"$STATE",
+  "LANGUAGE":"$C",
+  "CCODE":"$C",
   "adminPW": "",
   "anonDhcp": "$anonDhcp",
   "cephalixPW": "",
@@ -61,7 +61,7 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "nmTrNet": "$nmTrNet",
   "regCode": "string"
   "type": "string",
-  "uuid": "template",
+  "uuid": "template"
 }
 EOF
 
