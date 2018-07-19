@@ -153,7 +153,8 @@ if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
 	$reply->{'ipVPN'} = $vpnblock->nth(2);
 	if( $reply->{'fullrouting'} )
 	{
-		$VPN .= 'iroute '.$reply->{'network'}.' '.$reply->{'netmask'}."\n";
+		my $block = new Net::Netmask($reply->{"network"});
+		$VPN .= 'iroute '.$block->base().' '.$block->mask()."\n";
 	}
 	write_file('/etc/openvpn/ccd/'.$reply->{'uuid'},$VPN);
 
@@ -162,7 +163,7 @@ if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
 }
 if( $SAVE_NEXT )
 {
-        my $block = new Net::Netmask($reply->{"network"}."/".$reply->{"netmask"});
+        my $block = new Net::Netmask($reply->{"network"});
         my $next  = $block->next();
         $default->{'network'} = $next;
         my ( $a,$b,$c,$d ) = split /\./, $next;
@@ -201,7 +202,7 @@ my $block           = new Net::Netmask($reply->{'network'});
 my $BITS            = $block->bits();
 
 # In 4.0 it was changed:
-my $SCHOOL_NM             = $block->mask();
+$reply->{'network'}       = $block->base();
 $reply->{'netmask'}       = $block->bits();
 $reply->{'netmaskString'} = $block->mask();
 my $dhcpBlock           = new Net::Netmask($reply->{'anonDhcpNetwork'});
