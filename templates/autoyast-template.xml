@@ -1001,6 +1001,7 @@ done
     </patterns>
     <packages config:type="list">
       <package>at</package>
+      <package>clamav</package>
       <package>apache2</package>
       <package>cephalix-client</package>
       <package>dhcp-server</package>
