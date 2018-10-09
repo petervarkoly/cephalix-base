@@ -957,6 +957,7 @@ chmod 600 /root/passwd
 echo -n '###cephalixPW###' > /root/cpasswd
 chmod 600 /root/cpasswd
 
+zypper install oss-java oss-web oss-lang
 sleep 10
 sed -i s/DHCPD_INTERFACE=""/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
