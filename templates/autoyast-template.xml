@@ -935,6 +935,7 @@ close(FILE);
         <filename>make-dir.sh</filename>
         <source><![CDATA[
 mkdir -p /mnt/etc/ssl/servercerts/certs
+mkdir -p /mnt/srv/salt/win/repo-ng
 ]]></source>
       </script>
     </chroot-scripts>
