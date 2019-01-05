@@ -12,7 +12,6 @@ binmode STDERR, ":encoding(UTF-8)";
 use utf8;
 
 my $Defaults = "/usr/share/cephalix/templates/Defaults.ini";
-my $XMLFile  = "/usr/share/cephalix/templates/autoyast-template.xml";
 
 my @TO_CLEAN   = qw(
         uuid
@@ -138,6 +137,9 @@ my $CEPHALIX_PATH   = $default->{'CEPHALIX_PATH'};
 my $CEPHALIX_DOMAIN = $default->{'CEPHALIX_DOMAIN'};
 my $SAVE_NEXT = ( $default->{'SAVE_NEXT'} eq "yes" ) ? 1 : 0;
 my $path = $CEPHALIX_PATH.'/configs/'.$reply->{"uuid"}.".ini";
+my $AY_TEMPLATE = $reply->{"ayTemplate"} || "default";
+my $XMLFile  = "/usr/share/cephalix/templates/autoyast-".$AY_TEMPLATE.".xml";
+
 system("mkdir -p $CEPHALIX_PATH/configs/");
 
 #Add the read only variables to the reply 
@@ -218,11 +220,6 @@ $reply->{'anonDhcpRange'} = $dhcpBlock->base()." ".$dhcpLast;
 my @ltmp = split /\./, $reply->{'domain'};
 $reply->{'WORKGROUP'} = uc($ltmp[0]);
 
-if( -e "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml"  )  {
-	$XMLFile = "/usr/share/cephalix/templates/autoyast-template-".$SCHOOL_sn.".xml";
-} elsif( -e "/usr/share/cephalix/templates/autoyast-template-".$reply->{'type'}.".xml"  )  {
-	$XMLFile = "/usr/share/cephalix/templates/autoyast-template-".$reply->{'type'}.".xml";
-}
 my $XML   = `cat $XMLFile`;
 foreach my $par ( keys %{$reply} )
 {
