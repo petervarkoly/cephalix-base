@@ -209,6 +209,8 @@ $reply->{'netmask'}       = $block->bits();
 $reply->{'netmaskString'} = $block->mask();
 my $dhcpBlock           = new Net::Netmask($reply->{'anonDhcpNetwork'});
 my $dhcpLast = $dhcpBlock->broadcast();
+my $serverBlock           = new Net::Netmask($reply->{'serverNetwork'});
+$reply->{'serverNetworkmask'} = $serverBlock->bits();
 if( $dhcpBlock->broadcast() eq $block->broadcast() ) {
    my @tmp  = split /\./, $dhcpBlock->broadcast();
    $dhcpLast = $tmp[0].'.'.$tmp[1].'.'.$tmp[2].'.'.( $tmp[3] - 1 );
