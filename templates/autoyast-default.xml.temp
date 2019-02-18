@@ -989,6 +989,9 @@ do
     systemctl enable $i
 done
 
+systemctl enable openvpn@CEPHALIX
+
+reboot
 
 ]]></source>
       </script>
@@ -1013,6 +1016,7 @@ done
       <pacakge>mariadb</pacakge>
       <pacakge>mariadb-client</pacakge>
       <pacakge>mariadb-errormessages</pacakge>
+      <package>openvpn</package>
       <package>oss-base</package>
       <package>salt</package>
       <package>salt</package>

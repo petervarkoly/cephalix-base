@@ -20,13 +20,13 @@ echo     "The internal network of the first server. Several IP-Adresses"
 echo  -n "of the server will be calculated based on this: X.X.X.2, X.X.X.3:"; read network
 echo  -n "The netmask of the internal network (255.255.0.0):"; read netmask
 
-ipAdmin=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
-ipMail=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
-ipPrint=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".4" }' )
-ipProxy=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".5" }' )
-ipBackup=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
-anonDhcp=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0 " $1 "." $2 "." $3+1 ".15" }' )
-firstRoom=$( echo $NET | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
+ipAdmin=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
+ipMail=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
+ipPrint=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".4" }' )
+ipProxy=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".5" }' )
+ipBackup=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
+anonDhcp=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0 " $1 "." $2 "." $3+1 ".15" }' )
+firstRoom=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
 
 cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
 {
