@@ -204,9 +204,10 @@ my $block           = new Net::Netmask($reply->{'network'});
 my $BITS            = $block->bits();
 
 # In 4.0 it was changed:
-$reply->{'network'}       = $block->base();
-$reply->{'netmask'}       = $block->bits();
-$reply->{'netmaskString'} = $block->mask();
+$reply->{'network'}         = $block->base();
+$reply->{'netmask'}         = $block->bits();
+$reply->{'netmaskString'}   = $block->mask();
+$reply->{'firstNetAddress'} = $block->nth(1);
 my $dhcpBlock           = new Net::Netmask($reply->{'anonDhcpNetwork'});
 my $dhcpLast = $dhcpBlock->broadcast();
 my $serverBlock           = new Net::Netmask($reply->{'serverNetwork'});
