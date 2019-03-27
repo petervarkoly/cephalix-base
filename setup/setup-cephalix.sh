@@ -10,7 +10,8 @@ echo  -n "The name of your organisation: "; read O
 echo     "The IP Address of CEPHALIX server from which the servers will be connected.";
 echo  -n "If the servers will be connected  via VPN this is  the VPN-tunnel  address: "; read zadmin
 echo     "The official IP Addres or DNS name of the CEPHALIX."
-echo  -n "This is only  required for the VPN connections.: "; read CEPHALIX
+echo     "This is only  required for the VPN connections.";
+echo  -n "In other case leave it empty! : "; read CEPHALIX
 echo  -n "The VPN IP-Adress of the first server: "; read ipVPN
 echo  -n "IP address of the ntp server: "; read ipNTP
 echo  -n "Standard IP address in transport network for the servers: "; read ipTrNet
@@ -59,7 +60,7 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "network": "$network",
   "nmServerNet": "255.255.255.0",
   "nmTrNet": "$nmTrNet",
-  "regCode": "string"
+  "regCode": "string",
   "type": "string",
   "uuid": "template"
 }
@@ -73,3 +74,14 @@ mkdir -p /srv/www/htdocs/admin/{configs,isos}
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 
+if [ "${CEPHALIX}" ]; then
+   #Configure VPN Server
+   zypper install -n openvpn
+   openssl dhparam -out /etc/openvpn/dh2048.pem 2048
+   vpnNetwork=$( echo $zadmin | gawk -F "." '{ print $1 "." $2 "." $3 ".0" }' )
+   sed    "s/#DOMAIN#/${DOMAIN}/" /usr/share/cephalix/setup/vpn.conf > /etc/openvpn/server.conf
+   sed -i "s/VPNNETWORK/${vpnNetwork}/" /etc/openvpn/server.conf
+   mkdir -p /etc/openvpn/ccd/
+   systemctl enable openvpn@server
+   systemctl start openvpn@serveR
+fi
