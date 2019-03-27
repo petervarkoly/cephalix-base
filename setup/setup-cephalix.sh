@@ -19,7 +19,7 @@ echo  -n "Standard netmask  in transport network for the servers: "; read nmTrNe
 echo  -n "Standard gateway in transport network for the servers: "; read gwTrNet
 echo     "The internal network of the first server. Several IP-Adresses"
 echo  -n "of the server will be calculated based on this: X.X.X.2, X.X.X.3:"; read network
-echo  -n "The netmask of the internal network (255.255.0.0):"; read netmask
+echo  -n "The netmask in bit of the internal network (16):"; read netmask
 
 ipAdmin=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
 ipMail=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
@@ -27,6 +27,7 @@ ipPrint=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".4" }' )
 ipProxy=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".5" }' )
 ipBackup=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
 anonDhcp=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0 " $1 "." $2 "." $3+1 ".15" }' )
+anonDhcpNetwork=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0/27" }' )
 firstRoom=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
 
 cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
@@ -42,12 +43,14 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "CCODE":"$C",
   "adminPW": "",
   "anonDhcp": "$anonDhcp",
+  "anonDhcpNetwork":"$anonDhcpNetwork",
   "cephalixPW": "",
   "domain": "",
   "firstRoom": "$firstRoom",
   "gwTrNet": "$gwTrNet",
   "id": 1,
   "ipAdmin": "$ipAdmin",
+  "ipGateway": "$ipAdmin",
   "ipBackup": "$ipBackup",
   "ipMail": "$ipMail",
   "ipPrint": "$ipPrint",
@@ -56,12 +59,11 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "ipVPN": "$ipVPN",
   "locality": "$locality",
   "name": "Institute Template",
-  "netmask": "$netmask",
-  "network": "$network",
-  "nmServerNet": "255.255.255.0",
+  "network": "$network/$netmask",
+  "serverNetwork": "$network/24",
   "nmTrNet": "$nmTrNet",
-  "regCode": "string",
-  "type": "string",
+  "regCode": "",
+  "type": "gymnasium",
   "uuid": "template"
 }
 EOF
@@ -73,15 +75,18 @@ mkdir -p /srv/www/htdocs/admin/{configs,isos}
 
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
-
+/root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "admin" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
+cp /root/CEPHALIX/CA_MGM/cacert.pem /etc/ssl/servercerts/cacert.pem
+cp /root/CEPHALIX/CA_MGM/certs/*    /etc/ssl/servercerts/certs/
+systemctl restart apache
 if [ "${CEPHALIX}" ]; then
    #Configure VPN Server
-   zypper install -n openvpn
+   zypper -n install openvpn
    openssl dhparam -out /etc/openvpn/dh2048.pem 2048
    vpnNetwork=$( echo $zadmin | gawk -F "." '{ print $1 "." $2 "." $3 ".0" }' )
    sed    "s/#DOMAIN#/${DOMAIN}/" /usr/share/cephalix/setup/vpn.conf > /etc/openvpn/server.conf
    sed -i "s/VPNNETWORK/${vpnNetwork}/" /etc/openvpn/server.conf
    mkdir -p /etc/openvpn/ccd/
    systemctl enable openvpn@server
-   systemctl start openvpn@serveR
+   systemctl start openvpn@server
 fi

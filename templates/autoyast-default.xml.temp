@@ -76,7 +76,7 @@ mute-replay-warnings
 ca   /etc/ssl/servercerts/cacert.pem
 cert /etc/ssl/servercerts/vpncert.pem
 key  /etc/ssl/servercerts/vpnkey.pem
-proto tcp
+proto udp
 remote ###CEPHALIX### 1194
 nobind
 

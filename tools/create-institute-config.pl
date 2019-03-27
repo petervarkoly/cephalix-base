@@ -129,13 +129,12 @@ while(<STDIN>) {
 my $TASK      =`uuidgen -t`; chomp $TASK;
 system("mkdir -p /var/adm/oss/opentasks/");
 write_file("/var/adm/oss/opentasks/$TASK",$hash);
-
-my $reply = convert_json_to_hash($hash);
-
+#my $reply = convert_json_to_hash($hash);
+my $reply = eval { decode_json($hash) };
 my $default  = decode_json(`cat $Defaults`);
 my $CEPHALIX_PATH   = $default->{'CEPHALIX_PATH'};
 my $CEPHALIX_DOMAIN = $default->{'CEPHALIX_DOMAIN'};
-my $SAVE_NEXT = ( $default->{'SAVE_NEXT'} eq "yes" ) ? 1 : 0;
+my $SAVE_NEXT       = $default->{'SAVE_NEXT'};
 my $path = $CEPHALIX_PATH.'/configs/'.$reply->{"uuid"}.".ini";
 my $AY_TEMPLATE = $reply->{"ayTemplate"} || "default";
 my $XMLFile  = "/usr/share/cephalix/templates/autoyast-".$AY_TEMPLATE.".xml";
@@ -151,22 +150,21 @@ foreach my $k ( keys(%$READONLY) )
 #Handle VPN
 if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
 	my $vpnblock = new Net::Netmask($reply->{'ipVPN'}."/255.255.255.252");
-	my $VPN      = "ifconfig-push ".$vpnblock->nth(2).' '.$vpnblock->nth(1)."\n";
-	$reply->{'ipVPN'} = $vpnblock->nth(2);
+	my $VPN      = "ifconfig-push ".$vpnblock->nth(1).' '.$vpnblock->nth(2)."\n";
+	$reply->{'ipVPN'} = $vpnblock->nth(1);
 	if( $reply->{'fullrouting'} )
 	{
-		my $block = new Net::Netmask($reply->{"network"});
 		$VPN .= 'iroute '.$block->base().' '.$block->mask()."\n";
 	}
 	write_file('/etc/openvpn/ccd/'.$reply->{'uuid'},$VPN);
 
-	my $next     = $vpnblock->next();
-	$default->{'ipVPN'} = $next;
+	$default->{'ipVPN'} = $vpnblock->next();
+	system('systemctl restart openvpn@server');
 }
 if( $SAVE_NEXT )
 {
         my $block = new Net::Netmask($reply->{"network"});
-        my $next  = $block->next();
+        my $next  = $block->next()."/".$block->bits();
         $default->{'network'} = $next;
         my ( $a,$b,$c,$d ) = split /\./, $next;
         $default->{'ipAdmin'}	= "$a.$b.$c.".($d+2);
@@ -176,6 +174,9 @@ if( $SAVE_NEXT )
         $default->{'ipBackup'}	= "$a.$b.$c.".($d+6);
         $default->{'anonDhcp'}	= "$a.$b.".($c+1).".0 $a.$b.".($c+1).".31";
         $default->{'firstRoom'}	= "$a.$b.".($c+2).".0";
+	$default->{'serverNetwork'} = "$a.$b.$c.$0/24";
+	$default->{'anonDhcpNetwork'} = "$a.$b.".($c+1).".0/27";
+	$default->{'ipGateway'} = "$a.$b.$c.".($d+2);
 }
 
 foreach my $v ( @TO_CLEAN )
@@ -208,13 +209,12 @@ $reply->{'network'}         = $block->base();
 $reply->{'netmask'}         = $block->bits();
 $reply->{'netmaskString'}   = $block->mask();
 $reply->{'firstNetAddress'} = $block->nth(1);
-my $dhcpBlock           = new Net::Netmask($reply->{'anonDhcpNetwork'});
-my $dhcpLast = $dhcpBlock->broadcast();
-my $serverBlock           = new Net::Netmask($reply->{'serverNetwork'});
+my $dhcpBlock               = new Net::Netmask($reply->{'anonDhcpNetwork'});
+my $dhcpLast                = $dhcpBlock->broadcast();
+my $serverBlock             = new Net::Netmask($reply->{'serverNetwork'});
 $reply->{'serverNetworkmask'} = $serverBlock->bits();
 if( $dhcpBlock->broadcast() eq $block->broadcast() ) {
-   my @tmp  = split /\./, $dhcpBlock->broadcast();
-   $dhcpLast = $tmp[0].'.'.$tmp[1].'.'.$tmp[2].'.'.( $tmp[3] - 1 );
+   $dhcpLast = $dhcpBlock->nth(-2);
 }
 
 $reply->{'anonDhcpRange'} = $dhcpBlock->base()." ".$dhcpLast;
@@ -247,7 +247,7 @@ foreach my $sslpar ( @SSL )
 }
 system("mkdir -p /srv/www/admin/{configs,isos}");
 write_file("/srv/www/admin/configs/$SCHOOL_sn.xml",$XML);
-write_file($Defaults,hash_to_json($default));
+write_file($Defaults,encode_json($default));
 
 my $apache = "        ProxyPass          /$SCHOOL_sn http://".$reply->{'ipVPN'}."/api
         ProxyPassReverse   /$SCHOOL_sn http://".$reply->{'ipVPN'}."/api
