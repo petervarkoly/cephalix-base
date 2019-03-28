@@ -157,7 +157,7 @@ if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
 		$VPN .= 'iroute '.$block->base().' '.$block->mask()."\n";
 	}
 	write_file('/etc/openvpn/ccd/'.$reply->{'uuid'},$VPN);
-	my $nextblock = $vpnblock->nextblock()
+	my $nextblock = $vpnblock->nextblock();
         $default->{'ipVPN'} = $nextblock->nth(1);
 	system('systemctl restart openvpn@server');
 }
