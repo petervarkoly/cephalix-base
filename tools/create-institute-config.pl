@@ -134,7 +134,7 @@ my $reply = eval { decode_json($hash) };
 my $default  = decode_json(`cat $Defaults`);
 my $CEPHALIX_PATH   = $default->{'CEPHALIX_PATH'};
 my $CEPHALIX_DOMAIN = $default->{'CEPHALIX_DOMAIN'};
-my $SAVE_NEXT       = $default->{'SAVE_NEXT'};
+my $SAVE_NEXT       = defined $reply->{'saveNext'} ? defined $reply->{'saveNext'} : $default->{'SAVE_NEXT'};
 my $path = $CEPHALIX_PATH.'/configs/'.$reply->{"uuid"}.".ini";
 my $AY_TEMPLATE = $reply->{"ayTemplate"} || "default";
 my $XMLFile  = "/usr/share/cephalix/templates/autoyast-".$AY_TEMPLATE.".xml";
@@ -247,7 +247,10 @@ foreach my $sslpar ( @SSL )
 }
 system("mkdir -p /srv/www/admin/{configs,isos}");
 write_file("/srv/www/admin/configs/$SCHOOL_sn.xml",$XML);
-write_file($Defaults,encode_json($default));
+
+if $( $SAVE_NEXT ) {
+	write_file($Defaults,encode_json($default));
+}
 
 my $apache = "        ProxyPass          /$SCHOOL_sn http://".$reply->{'ipVPN'}."/api
         ProxyPassReverse   /$SCHOOL_sn http://".$reply->{'ipVPN'}."/api
