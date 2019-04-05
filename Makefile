@@ -14,6 +14,7 @@ PACKAGE         = cephalix-base
 
 install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
+	mkdir -p $(OSSSHARE)/plugins/
 	mkdir -p $(DESTDIR)/etc
 	mkdir -p $(DESTDIR)/$(FILLUPDIR)
 	rsync -a etc/       $(DESTDIR)/etc/
