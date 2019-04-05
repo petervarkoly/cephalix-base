@@ -4,7 +4,7 @@
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
 OSSSHARE        = $(DESTDIR)/usr/share/oss/
-TOPACKAGE       = Makefile etc setup tools templates README.md
+TOPACKAGE       = Makefile etc setup tools templates plugins README.md
 VERSION         = $(shell test -e ../VERSION && cp ../VERSION VERSION ; cat VERSION)
 RELEASE         = $(shell cat RELEASE )
 NRELEASE        = $(shell echo $(RELEASE) + 1 | bc )
