@@ -21,6 +21,7 @@ Group:          Productivity/
 Source:         %{name}.tar.bz2
 BuildArch:      noarch
 PreReq:         filesystem
+PreReq:         oss-base
 Requires:       mkisofs
 Requires:       perl-JSON-XS
 Requires:	perl-Net-Netmask
@@ -57,6 +58,10 @@ make install DESTDIR=%{buildroot} %{?_smp_mflags}
 %dir /usr/share/cephalix
 %dir /usr/share/cephalix/templates/
 %config(noreplace) /usr/share/cephalix/templates/*
+%dir /usr/share/oss/plugins/add_institute/
+%dir /usr/share/oss/plugins/modify_institute/
+/usr/share/oss/plugins/add_institute/*
+/usr/share/oss/plugins/modify_institute/*
 %doc README.md
 
 %description

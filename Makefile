@@ -3,6 +3,7 @@
 #
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
+OSSSHARE        = $(DESTDIR)/usr/share/oss/
 TOPACKAGE       = Makefile etc setup tools templates README.md
 VERSION         = $(shell test -e ../VERSION && cp ../VERSION VERSION ; cat VERSION)
 RELEASE         = $(shell cat RELEASE )
@@ -19,6 +20,7 @@ install:
 	rsync -a tools/     $(SHARE)/tools/
 	rsync -a templates/ $(SHARE)/templates/
 	rsync -a setup/     $(SHARE)/setup/
+	rsync -a plugins/   $(OSSSHARE)/plugins/
 
 dist:
 	if [ -e $(PACKAGE) ] ;  then rm -rf $(PACKAGE) ; fi   
