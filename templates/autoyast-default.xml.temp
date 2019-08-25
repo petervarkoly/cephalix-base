@@ -177,13 +177,18 @@ SCHOOL_BACKUP_CHECK_MOUNT="yes"
 # Make backup from the ctool images and configuration.
 SCHOOL_BACKUP_CTOOL="yes"
 
+## Type:        string
+## Default:     23456
+# On which day make backup from the OSS.
+SCHOOL_BACKUP_DAYS="23456"
+
 ## Type:	yesno
 ## Default:	yes
 # Make backup from the SQL databases.
 SCHOOL_BACKUP_DB="yes"
 
 ## Type:	string
-## Default:	
+## Default:	/mnt/backup
 # The path to the directory of the full backup.
 SCHOOL_BACKUP_FULL_DIR="/mnt/backup"
 
@@ -193,7 +198,7 @@ SCHOOL_BACKUP_FULL_DIR="/mnt/backup"
 SCHOOL_BACKUP_HOME="yes"
 
 ## Type:	string
-## Default:	
+## Default:	/mnt/backup
 # The path to the directory of the incremental backups.
 SCHOOL_BACKUP_INC_DIR="/mnt/backup"
 
@@ -203,10 +208,19 @@ SCHOOL_BACKUP_INC_DIR="/mnt/backup"
 SCHOOL_BACKUP_MAIL="yes"
 
 ## Type:        string
-## Default:
+## Default:	"umount /mnt/backup"
 # Shell command to execute after the backup is stoped.
 SCHOOL_BACKUP_STOP_CMD="umount /mnt/backup"
 
+## Type:        integer
+## Default:     80
+# Is the backup medium more filled in percent admin will get a warning mail.
+SCHOOL_BACKUP_WARNING_LIMIT="80"
+
+## Type:        yesno readonly
+## Default:     no
+# Should create backup with hardlinks. It is possible only if SCHOOL_BACKUP_FULL_DIR and SCHOOL_BACKUP_INC_DIR are the same.
+SCHOOL_BACKUP_WITH_HARDLINK="no"
 
 ########################################################################
 ## Path:        Network/Server/Basis
