@@ -13,6 +13,9 @@ gencert() {
 
     openssl=/usr/bin/openssl
 
+NOW=$(date +%s)
+DAYS=$((1842897419-NOW))
+DAYS=$((DAYS/86400-1))
 
 cat<<EOF > $CPATH/openssl.cfg
 [ ca ]
@@ -34,7 +37,7 @@ RANDFILE        = \$dir/private/.rand
 
 x509_extensions = usr_cert
 
-default_days    = 3600
+default_days    = $DAYS
 default_md      = sha256
 policy          = policy_anything
 
