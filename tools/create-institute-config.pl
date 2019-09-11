@@ -154,6 +154,7 @@ if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
 	$reply->{'ipVPN'} = $vpnblock->nth(1);
 	if( $reply->{'fullrouting'} )
 	{
+		my $block = new Net::Netmask($reply->{"network"});
 		$VPN .= 'iroute '.$block->base().' '.$block->mask()."\n";
 	}
 	write_file('/etc/openvpn/ccd/'.$reply->{'uuid'},$VPN);
@@ -250,7 +251,7 @@ foreach my $sslpar ( @SSL )
 system("mkdir -p /srv/www/admin/{configs,isos}");
 write_file("/srv/www/admin/configs/$SCHOOL_sn.xml",$XML);
 
-if $( $SAVE_NEXT ) {
+if ( $SAVE_NEXT ) {
 	write_file($Defaults,encode_json($default));
 }
 
