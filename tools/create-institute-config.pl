@@ -146,6 +146,7 @@ foreach my $k ( keys(%$READONLY) )
 {
        $reply->{$k} = $default->{$k};
 }
+my $block = new Net::Netmask($reply->{"network"});
 
 #Handle VPN
 if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
@@ -166,7 +167,6 @@ if( $reply->{'ipAdmin'} ne $reply->{'ipVPN'} ) {
 }
 if( $SAVE_NEXT )
 {
-        my $block = new Net::Netmask($reply->{"network"});
         my $next  = $block->next()."/".$block->bits();
         $default->{'network'} = $next;
         my ( $a,$b,$c,$d ) = split /\./, $next;
@@ -204,7 +204,6 @@ if( ! -e "$CEPHALIX_PATH/CA_MGM/certs/admin.".$reply->{"domain"}.".key.pem" ) {
 
 my $SCHOOL_DOMAIN   = $reply->{'domain'};
 my $SCHOOL_sn       = $reply->{'uuid'};
-my $block           = new Net::Netmask($reply->{'network'});
 my $BITS            = $block->bits();
 
 # In 4.0 it was changed:
