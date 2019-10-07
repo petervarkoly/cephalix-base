@@ -97,4 +97,6 @@ with open(DEFAULTS_FILE,'w') as f:
 with open('/etc/apache2/vhosts.d/admin-ssl/'+institute['uuid']+'.conf','w'):
     f.write("        ProxyPass          /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
     f.write("        ProxyPassReverse   /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
-os.system("systemctl restart apache2")
+os.system('systemctl restart apache2')
+os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['uuid']))
+
