@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import json
 import socket
 import os
 import sys
-from netaddr import *
+from ipaddress import *
 #Define some defaults
 # The file with the default values.
 DEFAULTS_FILE = "/usr/share/cephalix/templates/Defaults.ini"
@@ -11,23 +11,12 @@ DEFAULTS_FILE = "/usr/share/cephalix/templates/Defaults.ini"
 TO_CLEAN = ( "uuid", "name", "type", "domain", "adminPW" )
 # Attributes which must not be changed
 READONLY = ( "CEPHALIX", "CEPHALIX_PATH", "CEPHALIX_DOMAIN", "CCODE", "LANGUAGE", "NTP", "ZADMIN" )
-# Attributes related to ssl
-SSL = ( "REPLACE-SSHKEY",
-        "REPLACE-CA-CERT",
-        "REPLACE-VPN-CERT",
-        "REPLACE-VPN-KEY",
-        "REPLACE-SERVER-KEY",
-        "REPLACE-SERVER-CERT",
-        "REPLACE-ADMIN-CERT",
-        "REPLACE-ADMIN-KEY",
-        "REPLACE-SCHOOL-KEY",
-        "REPLACE-SCHOOL-CERT")
 
 #Read datas from stdin
 institute=json.loads(sys.stdin.read())
 #Read the defaults from the config file
-defaults=json.loads(open(DEFAULTS_FILE,"r").read)
-SSLVARS = []
+defaults=json.loads(open(DEFAULTS_FILE,"r").read())
+SSLVARS = {}
 
 CEPHALIX_PATH = defaults['CEPHALIX_PATH']
 
@@ -42,19 +31,49 @@ save_next     = institute.get("SAVE_NEXT",True)
 save_next_vpn = institute.get("SAVE_NEXT_VPN",True)
 
 # create some networks
-network = IPNetwork(institute['network'])
-network_dhcp   = IPNetwork(institute['anonDhcpNetwork'])
-network_server = IPNetwork(institute['serverNetwork'])
+network        = IPv4Network(institute['network'])
+network_dhcp   = IPv4Network(institute['anonDhcpNetwork'])
+network_server = IPv4Network(institute['serverNetwork'])
+# calculate some network paramater
+anon_dhcp_first = network_dhcp.network_address
+anon_dhcp_last  = network_dhcp.network_address + network_dhcp.num_addresses -1
+if network_dhcp.network_address == network.network_address: 
+    anon_dhcp_first = anon_dhcp_first + 1
+if anon_dhcp_last == network.network_address + network.num_addresses - 1:
+    anon_dhcp_last = anon_dhcp_last - 1
+institute['anonDhcpRange'] = "{} {}".format(anon_dhcp_first,anon_dhcp_last)
+institute['netmask']       = network.prefixlen
+institute['netmaskString'] = network.netmask
+if 'WORKGROUP' not in institute:
+    institute['WORKGROUP'] = institute['domain'].split('.')[0].upper()[0:15]
 
 # Handle VPN
 if institute["ipAdmin"] != institute['ipVPN']:
-    vpn_net = IPNetwork("{}/{}".format(institute['ipVPN'],"255.255.255.252"))
+    vpn_net = IPv4Network("{}/{}".format(institute['ipVPN'],'30'),False)
     with open("/etc/openvpn/ccd/"+ institute['uuid'],"w") as ccd:
-        ccd.write("ifconfig-push {} {}\n".format(IPAddress(vpn_net.first+1),IPAddress(vpn_net.last-1)))
+        ip_addresses = list(vpn_net.hosts())
+        ccd.write("ifconfig-push {} {}\n".format(ip_addresses[0],ip_addresses[1]))
         if institute.get('fullrouting',False):
-            ccd.write("iroute {} {}".format(IPAddress(network.first), IPAddress(network.netmask)))
+            ccd.write("iroute {} {}".format(network.network_address, network.netmask))
     if defaults['ipVPN'] == institute['ipVPN']:
-        default['ipVPN'] = IPAddress(vpn_net.next().first + 1)
+        next_vpn_ip = vpn_net.network_address+6
+        defaults['ipVPN'] = next_vpn_ip.exploded
+# Create next network if necessary
+if institute['saveNext'] and ( institute['network'] == defaults['network'] ):
+    next_network_address = network.network_address + network.num_addresses
+    next_network = IPv4Network("{}/{}".format(next_network_address, network.prefixlen))
+    ip_addresses = list(next_network.hosts())
+    defaults['network']  = next_network.exploded
+    defaults['ipAdmin']  = ip_addresses[1].exploded
+    defaults['ipMail']   = ip_addresses[2].exploded
+    defaults['ipPrint']  = ip_addresses[3].exploded
+    defaults['ipProxy']  = ip_addresses[4].exploded
+    defaults['ipBackup'] = ip_addresses[5].exploded
+    defaults['anonDhcp'] = '{} {}'.format(ip_addresses[255],ip_addresses[510])
+    defaults['anonDhcpNetwork'] = '{}/{}'.format(ip_addresses[255],24)
+    defaults['firstRoom']     = ip_addresses[511].exploded
+    defaults['serverNetwork'] = '{}/{}'.format(next_network_address,network.prefixlen)
+    defaults['ipGateway']     = ip_addresses[1].exploded
 
 # Handle Certificates
 if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain'] + '.key.pem' ):
@@ -80,23 +99,24 @@ SSLVARS['REPLACE-SCHOOL-CERT']= open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.
 
 xml_content = open(xml_file,'r').read()
 for key in institute:
-    xml_content.replace('###'+key+'###',institute[key])
-for key in SSL:
-    xml_content.replace(key,SSLVARS[key])
-os.system('mkdir -p /srv/www/admin/{configs,isos}"')
+    value = "{}".format(institute[key])
+    rkey  = '###'+key+'###'
+    xml_content = xml_content.replace(rkey,value)
+for key in SSLVARS:
+    xml_content = xml_content.replace(key,SSLVARS[key])
+os.system('mkdir -p /srv/www/admin/{configs,isos}')
 
 #write the xml file
 with open('/srv/www/admin/configs/' + institute['uuid'] + '.xml' ,'w') as f:
     f.write(xml_content)
-
 #rewrite the defaults
 with open(DEFAULTS_FILE,'w') as f:
     f.write(json.dumps(defaults))
 
 #write apache configuration
-with open('/etc/apache2/vhosts.d/admin-ssl/'+institute['uuid']+'.conf','w'):
+with open('/etc/apache2/vhosts.d/admin-ssl/'+institute['uuid']+'.conf','w') as f:
     f.write("        ProxyPass          /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
     f.write("        ProxyPassReverse   /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
-os.system('systemctl restart apache2')
+os.system('systemctl reload apache2')
 os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['uuid']))
 

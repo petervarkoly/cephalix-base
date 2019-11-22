@@ -1015,7 +1015,7 @@ reboot
     <patterns config:type="list">
       <pattern>base</pattern>
       <pattern>x11</pattern>
-      <pattern>xfce</pattern>
+      <pattern>kde</pattern>
       <pattern>sw_management</pattern>
     </patterns>
     <packages config:type="list">
