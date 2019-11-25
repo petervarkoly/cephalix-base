@@ -16,35 +16,34 @@
       <second_stage config:type="boolean">true</second_stage>
     </mode>
     <ask-list config:type="list">
- <!-- BEGIN Dialog 10 - Select the device & size -->
+      <!-- BEGIN Dialog 10 - Select the device & size -->
       <ask>
         <dialog config:type="integer">10</dialog>
         <element config:type="integer">0</element>
-         <width config:type="integer">70</width>
-         <height config:type="integer">20</height>
+        <width config:type="integer">70</width>
+        <height config:type="integer">20</height>
         <title>System Volume Configuration</title>
         <question>Select the system volume device</question>
         <help><![CDATA[
              <p><b>Device</b><br>Select the system volume device.</p>
 ]]></help>
         <pathlist config:type="list">
-           <path>partitioning,0,device</path>
+          <path>partitioning,0,device</path>
         </pathlist>
         <stage>initial</stage>
         <default>___DEVICELIST___</default>
-           <script>
-              <filename>root_dev_size.sh</filename>
-              <rerun_on_error config:type="boolean">true</rerun_on_error>
-              <environment config:type="boolean">true</environment>
-              <source><![CDATA[
+        <script>
+          <filename>root_dev_size.sh</filename>
+          <rerun_on_error config:type="boolean">true</rerun_on_error>
+          <environment config:type="boolean">true</environment>
+          <source><![CDATA[
 echo $VAL > /tmp/selected-device
-]]>
-              </source>
-              <debug config:type="boolean">false</debug>
-              <feedback config:type="boolean">true</feedback>
-           </script>
+]]></source>
+          <debug config:type="boolean">false</debug>
+          <feedback config:type="boolean">true</feedback>
+        </script>
       </ask>
-     </ask-list>
+    </ask-list>
   </general>
   <keyboard>
     <keymap>german</keymap>
@@ -217,7 +216,7 @@ SCHOOL_BACKUP_STOP_CMD="umount /mnt/backup"
 # Is the backup medium more filled in percent admin will get a warning mail.
 SCHOOL_BACKUP_WARNING_LIMIT="80"
 
-## Type:        yesno readonly
+## Type:        yesno
 ## Default:     no
 # Should create backup with hardlinks. It is possible only if SCHOOL_BACKUP_FULL_DIR and SCHOOL_BACKUP_INC_DIR are the same.
 SCHOOL_BACKUP_WITH_HARDLINK="no"
@@ -535,10 +534,6 @@ pubmed.gov
 ]]></file_contents>
     </config_file>
   </files>
-  <mail>
-    <outgoing_mail_server>mailserver.###domain###</outgoing_mail_server>
-    <connection_type config:type="symbol">permanent</connection_type>
-  </mail>
   <networking>
     <dns>
       <dhcp_hostname config:type="boolean">false</dhcp_hostname>
@@ -581,16 +576,15 @@ pubmed.gov
     </routing>
   </networking>
   <ntp-client>
-    <configure_dhcp config:type="boolean">false</configure_dhcp>
-    <peers config:type="list">
-      <peer>
+    <ntp_policy>auto</ntp_policy>
+    <ntp_servers config:type="list">
+      <ntp_server>
+        <iburst config:type="boolean">false</iburst>
         <address>###NTP###</address>
-        <options>iburst</options>
-        <type>server</type>
-      </peer>
-    </peers>
-    <start_at_boot config:type="boolean">true</start_at_boot>
-    <start_in_chroot config:type="boolean">true</start_in_chroot>
+        <offline config:type="boolean">true</offline>
+      </ntp_server>
+    </ntp_servers>
+    <ntp_sync>systemd</ntp_sync>
   </ntp-client>
   <firewall>
     <FW_ALLOW_FW_BROADCAST_DMZ>no</FW_ALLOW_FW_BROADCAST_DMZ>
@@ -720,7 +714,7 @@ pubmed.gov
           <crypt_fs config:type="boolean">false</crypt_fs>
           <filesystem config:type="symbol">xfs</filesystem>
           <format config:type="boolean">true</format>
-              <fstopt>defaults,uquota</fstopt>
+          <fstopt>defaults,uquota</fstopt>
           <loop_fs config:type="boolean">false</loop_fs>
           <lv_name>home</lv_name>
           <mount>/home</mount>
@@ -948,6 +942,9 @@ close(FILE);
         <debug config:type="boolean">false</debug>
         <filename>make-dir.sh</filename>
         <source><![CDATA[
+mkdir -m 700 -p /mnt/root/.ssh
+mkdir -p /mnt/etc/squid
+mkdir -p /mnt/etc/openvpn
 mkdir -p /mnt/etc/ssl/servercerts/certs
 mkdir -p /mnt/srv/salt/win/repo-ng
 ]]></source>
@@ -995,16 +992,14 @@ sed -i 's/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS="zadmin ###CEPHALIX###"/' /etc/sys
 sed -i 's/connectip/###ipVPN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 sed -i 's/zadminip/###ZADMIN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 #Install some late packages:
-zypper -n install oss-clone oss-proxy openvpn
+zypper -n install oss-clone oss-proxy
 
 #Activate some services
 for i in $( cat /usr/share/oss/setup/services-to-enable )
 do
     systemctl enable $i
 done
-
 systemctl enable openvpn@CEPHALIX
-
 reboot
 
 ]]></source>
@@ -1032,7 +1027,7 @@ reboot
       <pacakge>mariadb-errormessages</pacakge>
       <package>openvpn</package>
       <package>oss-base</package>
-      <package>salt</package>
+      <package>SuSEfirewall2</package>
       <package>salt</package>
       <package>salt-api</package>
       <package>salt-bash-completion</package>
@@ -1044,7 +1039,10 @@ reboot
       <package>xfsprogs</package>
       <package>yast2-oss-setup</package>
       <package>yast2-firstboot</package>
-   </packages>
+    </packages>
+    <remove-packages config:type="list">
+      <package>firewalld</package>
+    </remove-packages>
   </software>
   <services-manager>
     <default_target>graphical</default_target>
@@ -1054,8 +1052,6 @@ reboot
       <enable config:type="list">
         <service>apache2</service>
         <service>cups</service>
-        <service>oss-api</service>
-        <service>salt</service>
         <service>salt-master</service>
         <service>salt-api</service>
         <service>sshd</service>
