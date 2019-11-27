@@ -88,6 +88,15 @@ if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain']
     os.system(command)
     command = cmd + ' -D ' + institute['domain'] + ' -N schoolserver'
     os.system(command)
+if not os.path.isfile(CEPHALIX_PATH+'CA_MGM/certs/' + institute['uuid'] + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem'):
+    # This is the second server for the same school.
+    cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
+    if 'state' in institute:
+        cmd += ' -S "' + institute['state'] + '"'
+    if 'locality' in  institute:
+        cmd += ' -L "' + institute['locality'] + '"'
+    command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + institute['uuid'] + '" -s'
+    os.system(command)
 SSLVARS['REPLACE-SSHKEY']     = open('/root/.ssh/id_rsa.pub','r').read()
 SSLVARS['REPLACE-CA-CERT']    = open(CEPHALIX_PATH + 'CA_MGM/cacert.pem','r').read()
 SSLVARS['REPLACE-VPN-KEY']    = open(CEPHALIX_PATH + 'CA_MGM/certs/' + institute['uuid'] + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem','r').read()
