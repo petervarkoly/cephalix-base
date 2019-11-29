@@ -106,6 +106,7 @@ SSLVARS['REPLACE-ADMIN-CERT'] = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + ins
 SSLVARS['REPLACE-SCHOOL-KEY'] = open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.' + institute['domain'] + '.key.pem','r').read()
 SSLVARS['REPLACE-SCHOOL-CERT']= open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.' + institute['domain'] + '.cert.pem','r').read()
 
+institute['network']       = network.network_address
 xml_content = open(xml_file,'r').read()
 for key in institute:
     value = "{}".format(institute[key])
