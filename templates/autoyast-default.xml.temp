@@ -987,6 +987,8 @@ echo '###ipAdmin###	admin.###domain### admin
 
 #Allow Cephalix all access
 sed -i 's/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS="zadmin ###CEPHALIX###"/' /etc/sysconfig/SuSEfirewall2
+sed -i 's/^FW_DEV_EXT=.*/FW_DEV_EXT="eth1"/' /etc/sysconfig/SuSEfirewall2
+sed -i 's/^FW_DEV_INT=.*/FW_DEV_INT="eth0 tun0"/' /etc/sysconfig/SuSEfirewall2
 
 #Configure Cephalix Access for Apache2
 sed -i 's/connectip/###ipVPN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
