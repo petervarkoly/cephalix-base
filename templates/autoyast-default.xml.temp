@@ -1035,8 +1035,12 @@ reboot
       <package>salt-bash-completion</package>
       <package>salt-doc</package>
       <package>salt-master</package>
+      <package>telnet</package>
       <package>tftp</package>
+      <package>vim</package>
       <package>vsftpd</package>
+      <package>w3m</package>
+      <package>wget</package>
       <package>xinetd</package>
       <package>xfsprogs</package>
       <package>yast2-oss-setup</package>
