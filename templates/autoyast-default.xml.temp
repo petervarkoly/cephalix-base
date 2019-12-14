@@ -971,7 +971,7 @@ chmod 600 /root/cpasswd
 
 sleep 10
 zypper -n install oss-java oss-web oss-lang
-sed -i s/DHCPD_INTERFACE=""/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
+sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
 /usr/share/oss/setup/scripts/oss-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --samba
 
@@ -1019,6 +1019,8 @@ reboot
       <package>at</package>
       <package>clamav</package>
       <package>apache2</package>
+      <package>udpcast</package>
+      <package>gutenprint</package>
       <package>cephalix-client</package>
       <package>dhcp-server</package>
       <package>icinga2</package>
