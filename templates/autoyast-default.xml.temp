@@ -207,6 +207,11 @@ SCHOOL_BACKUP_INC_DIR="/mnt/backup"
 SCHOOL_BACKUP_MAIL="yes"
 
 ## Type:        string
+## Default:
+# Shell command to execut the backup is started.
+SCHOOL_BACKUP_START_CMD="mount -o rw,acl backup:/backup /mnt/backup"
+
+## Type:        string
 ## Default:	"umount /mnt/backup"
 # Shell command to execute after the backup is stoped.
 SCHOOL_BACKUP_STOP_CMD="umount /mnt/backup"
