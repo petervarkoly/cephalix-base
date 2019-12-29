@@ -58,7 +58,7 @@ if institute["ipAdmin"] != institute['ipVPN']:
         if institute.get('fullrouting',False):
             ccd.write("iroute {} {}".format(network.network_address, network.netmask))
     if defaults['ipVPN'] == institute['ipVPN']:
-        next_vpn_ip = vpn_net.network_address+6
+        next_vpn_ip = vpn_net.network_address+5
         defaults['ipVPN'] = next_vpn_ip.exploded
 # Create next network if necessary
 if institute['saveNext'] and ( institute['network'] == defaults['network'] ):
