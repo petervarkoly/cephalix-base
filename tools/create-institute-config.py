@@ -139,5 +139,8 @@ with open('/etc/apache2/vhosts.d/admin-ssl/'+institute['uuid']+'.conf','w') as f
     f.write("        ProxyPass          /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
     f.write("        ProxyPassReverse   /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
 os.system('systemctl reload apache2')
-os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['regCode']))
+if defaults.get('createIsoBy','uuid') == 'regCode':
+    os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['regCode']))
+else:
+    os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['uuid']))
 
