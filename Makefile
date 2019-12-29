@@ -24,7 +24,7 @@ install:
 	rsync -a templates/ $(SHARE)/templates/
 	rsync -a setup/     $(SHARE)/setup/
 	rsync -a plugins/   $(OSSSHARE)/plugins/
-	install -m 755 sbin/*   $(OSSSHARE)/usr/sbin/
+	install -m 755 sbin/* $(DESTDIR)/usr/sbin/
 
 dist:
 	if [ -e $(PACKAGE) ] ;  then rm -rf $(PACKAGE) ; fi   
