@@ -64,6 +64,7 @@ make install DESTDIR=%{buildroot} %{?_smp_mflags}
 /usr/share/oss/plugins/add_institute/*
 /usr/share/oss/plugins/modify_institute/*
 /usr/share/oss/plugins/validate_regcode/*
+/usr/sbin/cephalix*
 %doc README.md
 
 %description

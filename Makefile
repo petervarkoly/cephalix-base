@@ -4,7 +4,7 @@
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
 OSSSHARE        = $(DESTDIR)/usr/share/oss/
-TOPACKAGE       = Makefile etc setup tools templates plugins README.md
+TOPACKAGE       = Makefile etc setup tools templates plugins sbin README.md
 VERSION         = $(shell test -e ../VERSION && cp ../VERSION VERSION ; cat VERSION)
 RELEASE         = $(shell cat RELEASE )
 NRELEASE        = $(shell echo $(RELEASE) + 1 | bc )
@@ -16,12 +16,14 @@ install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
 	mkdir -p $(OSSSHARE)/plugins/
 	mkdir -p $(DESTDIR)/etc
+	mkdir -p $(DESTDIR)/usr/sbin
 	mkdir -p $(DESTDIR)/$(FILLUPDIR)
 	rsync -a etc/       $(DESTDIR)/etc/
 	rsync -a tools/     $(SHARE)/tools/
 	rsync -a templates/ $(SHARE)/templates/
 	rsync -a setup/     $(SHARE)/setup/
 	rsync -a plugins/   $(OSSSHARE)/plugins/
+	install -m 755 sbin/*   $(OSSSHARE)/usr/sbin/
 
 dist:
 	if [ -e $(PACKAGE) ] ;  then rm -rf $(PACKAGE) ; fi   
