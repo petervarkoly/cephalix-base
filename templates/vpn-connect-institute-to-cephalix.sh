@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /etc/ssl/servercerts/certs/
-zypper -n install openvpn cephalix-client
+zypper -n install
 cat <<EOF >> /root/.ssh/autoirzed_keys
 REPLACE-SSHKEY
 EOF
