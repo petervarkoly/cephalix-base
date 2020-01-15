@@ -49,10 +49,14 @@ institute['netmaskString'] = network.netmask
 if 'WORKGROUP' not in institute:
     institute['WORKGROUP'] = institute['domain'].split('.')[0].upper()[0:15]
 
+ident=institute['uuid']
+if defaults.get('createIsoBy','uuid') == 'regCode':
+    ident=institute['regCode']
+
 # Handle VPN
 if institute["ipAdmin"] != institute['ipVPN']:
     vpn_net = IPv4Network("{}/{}".format(institute['ipVPN'],'30'),False)
-    with open("/etc/openvpn/ccd/"+ institute['regCode'],"w") as ccd:
+    with open("/etc/openvpn/ccd/"+ ident,"w") as ccd:
         ip_addresses = list(vpn_net.hosts())
         ccd.write("ifconfig-push {} {}\n".format(ip_addresses[0],ip_addresses[1]))
         if institute.get('fullrouting',False):
@@ -84,24 +88,25 @@ if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain']
         cmd += ' -S "' + institute['state'] + '"'
     if 'locality' in  institute:
         cmd += ' -L "' + institute['locality'] + '"'
-    command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + institute['regCode'] + '" -s'
+    command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + ident + '" -s'
     os.system(command)
     command = cmd + ' -D ' + institute['domain'] + ' -N admin'
     os.system(command)
     command = cmd + ' -D ' + institute['domain'] + ' -N schoolserver'
     os.system(command)
-if not os.path.isfile(CEPHALIX_PATH+'CA_MGM/certs/' + institute['regCode'] + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem'):
+if not os.path.isfile(CEPHALIX_PATH+'CA_MGM/certs/' + ident + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem'):
     cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
     if 'state' in institute:
         cmd += ' -S "' + institute['state'] + '"'
     if 'locality' in  institute:
         cmd += ' -L "' + institute['locality'] + '"'
-    command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + institute['regCode'] + '" -s'
+    command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + ident + '" -s'
     os.system(command)
+
 SSLVARS['REPLACE-SSHKEY']     = open('/root/.ssh/id_rsa.pub','r').read()
 SSLVARS['REPLACE-CA-CERT']    = open(CEPHALIX_PATH + 'CA_MGM/cacert.pem','r').read()
-SSLVARS['REPLACE-VPN-KEY']    = open(CEPHALIX_PATH + 'CA_MGM/certs/' + institute['regCode'] + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem','r').read()
-SSLVARS['REPLACE-VPN-CERT']   = open(CEPHALIX_PATH + 'CA_MGM/certs/' + institute['regCode'] + '.' + institute['CEPHALIX_DOMAIN'] + '.cert.pem','r').read()
+SSLVARS['REPLACE-VPN-KEY']    = open(CEPHALIX_PATH + 'CA_MGM/certs/' + ident + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem','r').read()
+SSLVARS['REPLACE-VPN-CERT']   = open(CEPHALIX_PATH + 'CA_MGM/certs/' + ident + '.' + institute['CEPHALIX_DOMAIN'] + '.cert.pem','r').read()
 SSLVARS['REPLACE-ADMIN-KEY']  = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + institute['domain'] + '.key.pem','r').read()
 SSLVARS['REPLACE-ADMIN-CERT'] = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + institute['domain'] + '.cert.pem','r').read()
 SSLVARS['REPLACE-SCHOOL-KEY'] = open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.' + institute['domain'] + '.key.pem','r').read()
@@ -123,12 +128,13 @@ for key in SSLVARS:
     full_connect_content = full_connect_content.replace(key,SSLVARS[key])
 os.system('mkdir -p /srv/www/admin/{configs,isos}')
 
+
 #write the config files
-with open('/srv/www/admin/configs/' + institute['regCode'] + '.xml' ,'w') as f:
+with open('/srv/www/admin/configs/' + ident + '.xml' ,'w') as f:
     f.write(xml_content)
-with open('/srv/www/admin/configs/' + institute['regCode'] + 'vpn-connect.sh' ,'w') as f:
+with open('/srv/www/admin/configs/' + ident + 'vpn-connect.sh' ,'w') as f:
     f.write(vpn_connect_content)
-with open('/srv/www/admin/configs/' + institute['regCode'] + 'full-connect.sh' ,'w') as f:
+with open('/srv/www/admin/configs/' + ident + 'full-connect.sh' ,'w') as f:
     f.write(full_connect_content)
 #rewrite the defaults
 with open(DEFAULTS_FILE,'w') as f:
@@ -139,8 +145,4 @@ with open('/etc/apache2/vhosts.d/admin-ssl/'+institute['uuid']+'.conf','w') as f
     f.write("        ProxyPass          /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
     f.write("        ProxyPassReverse   /{} http://{}/api\n".format(institute['uuid'],institute['ipVPN']))
 os.system('systemctl reload apache2')
-if defaults.get('createIsoBy','uuid') == 'regCode':
-    os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['regCode']))
-else:
-    os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(institute['uuid']))
-
+os.system('/usr/share/cephalix/tools/create_institue_iso.sh {}'.format(ident))
