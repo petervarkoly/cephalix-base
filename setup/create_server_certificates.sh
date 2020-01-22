@@ -116,6 +116,7 @@ authorityKeyIdentifier=keyid,issuer:always
 EOF
     if [ $NAME = "CA" ]; then
             sed -i '/subjectAltName         = DNS/d' $CPATH/openssl.cfg
+	    sed -i '/v3_req/d' $CPATH/openssl.cfg
             echo "creating CA request/certificate..."
             $openssl req -days 3601 -config $CPATH/openssl.cfg -new -x509 -nodes \
                 -keyout $CPATH/private/cakey.pem -out $CPATH/cacert.pem || {
@@ -128,6 +129,7 @@ EOF
     else
         if [ "$SHORT" ]; then
 	    sed -i '/subjectAltName         = DNS/d' $CPATH/openssl.cfg
+	    sed -i '/v3_req/d' $CPATH/openssl.cfg
 	fi
         echo "creating certificate request..."
         $openssl req -config $CPATH/openssl.cfg -new -nodes -keyout \

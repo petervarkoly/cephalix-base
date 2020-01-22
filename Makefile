@@ -1,14 +1,10 @@
 #
-# Copyright (c) 2018 Peter Varkoly Nürnberg, Germany.  All rights reserved.
+# Copyright (c) 2020 Peter Varkoly Nürnberg, Germany.  All rights reserved.
 #
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
 OSSSHARE        = $(DESTDIR)/usr/share/oss/
 TOPACKAGE       = Makefile etc setup tools templates plugins sbin README.md
-VERSION         = $(shell test -e ../VERSION && cp ../VERSION VERSION ; cat VERSION)
-RELEASE         = $(shell cat RELEASE )
-NRELEASE        = $(shell echo $(RELEASE) + 1 | bc )
-REQPACKAGES     = $(shell cat REQPACKAGES)
 HERE            = $(shell pwd)
 PACKAGE         = cephalix-base
 REPO		= /data1/OSC/home:varkoly:OSS-4-1:leap15.1/
@@ -36,16 +32,11 @@ dist:
 	tar jcpf $(PACKAGE).tar.bz2 -T files;
 	rm files
 	rm -rf $(PACKAGE)
-	sed    's/@VERSION@/$(VERSION)/'  $(PACKAGE).spec.in > $(PACKAGE).spec
-	sed -i 's/@RELEASE@/$(NRELEASE)/' $(PACKAGE).spec
 	if [ -d $(REPO)/$(PACKAGE) ] ; then \
 	    cd $(REPO)/$(PACKAGE); osc up; cd $(HERE);\
-	    mv $(PACKAGE).tar.bz2 $(PACKAGE).spec $(REPO)/$(PACKAGE); \
+	    mv $(PACKAGE).tar.bz2 $(REPO)/$(PACKAGE); \
 	    cd $(REPO)/$(PACKAGE); \
 	    osc vc; \
 	    osc ci -m "New Build Version"; \
 	fi
-	echo $(NRELEASE) > RELEASE
-	git commit -a -m "New release"
-	git push
 
