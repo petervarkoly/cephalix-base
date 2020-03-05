@@ -71,5 +71,5 @@ SuSEfirewall2
 systemctl start   openvpn@CEPHALIX
 systemctl enable  openvpn@CEPHALIX
 systemctl restart apache
-samba-tool user setpassword cephalix --nepassword='###cephalixPW###'
+samba-tool user setpassword cephalix --newpassword='###cephalixPW###'
 

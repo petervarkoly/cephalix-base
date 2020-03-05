@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /etc/ssl/servercerts/certs/
-zypper -n install
+zypper -n install openvpn
 cat <<EOF >> /root/.ssh/autoirzed_keys
 REPLACE-SSHKEY
 EOF

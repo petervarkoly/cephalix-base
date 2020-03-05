@@ -29,9 +29,6 @@ full_connect_file =  "/usr/share/cephalix/templates/full-connect-institute-to-ce
 for key in READONLY:
     institute[key] = defaults[key]
 
-save_next     = institute.get("SAVE_NEXT",True)
-save_next_vpn = institute.get("SAVE_NEXT_VPN",True)
-
 # create some networks
 network        = IPv4Network(institute['network'])
 network_dhcp   = IPv4Network(institute['anonDhcpNetwork'])
@@ -61,26 +58,6 @@ if institute["ipAdmin"] != institute['ipVPN']:
         ccd.write("ifconfig-push {} {}\n".format(ip_addresses[0],ip_addresses[1]))
         if institute.get('fullrouting',False):
             ccd.write("iroute {} {}".format(network.network_address, network.netmask))
-    if defaults['ipVPN'] == institute['ipVPN']:
-        next_vpn_ip = vpn_net.network_address+5
-        defaults['ipVPN'] = next_vpn_ip.exploded
-# Create next network if necessary
-if institute['saveNext'] and ( institute['network'] == defaults['network'] ):
-    next_network_address = network.network_address + network.num_addresses
-    next_network = IPv4Network("{}/{}".format(next_network_address, network.prefixlen))
-    ip_addresses = list(next_network.hosts())
-    defaults['network']  = next_network.exploded
-    defaults['ipAdmin']  = ip_addresses[1].exploded
-    defaults['ipMail']   = ip_addresses[2].exploded
-    defaults['ipPrint']  = ip_addresses[3].exploded
-    defaults['ipProxy']  = ip_addresses[4].exploded
-    defaults['ipBackup'] = ip_addresses[5].exploded
-    defaults['anonDhcp'] = '{} {}'.format(ip_addresses[255],ip_addresses[510])
-    defaults['anonDhcpNetwork'] = '{}/{}'.format(ip_addresses[255],24)
-    defaults['firstRoom']     = ip_addresses[511].exploded
-    defaults['serverNetwork'] = '{}/{}'.format(next_network_address,network.prefixlen)
-    defaults['ipGateway']     = ip_addresses[1].exploded
-
 # Handle Certificates
 if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain'] + '.key.pem' ):
     cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
@@ -115,7 +92,7 @@ SSLVARS['REPLACE-SCHOOL-CERT']= open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.
 institute['network']       = network.network_address
 xml_content = open(xml_file,'r').read()
 vpn_connect_content  = open(vpn_connect_file,'r').read()
-full_connect_content = open(vpn_connect_file,'r').read()
+full_connect_content = open(full_connect_file,'r').read()
 for key in institute:
     value = "{}".format(institute[key])
     rkey  = '###'+key+'###'
@@ -136,9 +113,6 @@ with open('/srv/www/admin/configs/' + ident + 'vpn-connect.sh' ,'w') as f:
     f.write(vpn_connect_content)
 with open('/srv/www/admin/configs/' + ident + 'full-connect.sh' ,'w') as f:
     f.write(full_connect_content)
-#rewrite the defaults
-with open(DEFAULTS_FILE,'w') as f:
-    f.write(json.dumps(defaults))
 
 #write apache configuration
 with open('/etc/apache2/vhosts.d/admin-ssl/'+institute['uuid']+'.conf','w') as f:
