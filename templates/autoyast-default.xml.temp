@@ -289,7 +289,7 @@ SCHOOL_NETMASK_STRING="###netmaskString###"
 ## Type:	string readonly
 ## Default:	"172.16.0.0"
 # Network Address of the internal network.
-SCHOOL_NETWORK="###network###"
+SCHOOL_NETWORK="###internalNetwork###"
 
 ## Type:	string readonly
 ## Default:	
@@ -349,7 +349,7 @@ SCHOOL_NETBIOSNAME="admin"
 ## Type:	string(primary,secondary,real,gymnasium,work,other) readonly
 ## Default:	gymnasium
 # The type of the school.
-SCHOOL_TYPE="###type###"
+SCHOOL_TYPE="###instituteType###"
 
 ## Type:	string readonly
 ## Default:	EXTIS

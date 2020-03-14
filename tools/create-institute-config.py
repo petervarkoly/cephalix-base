@@ -7,8 +7,6 @@ from ipaddress import *
 #Define some defaults
 # The file with the default values.
 DEFAULTS_FILE = "/usr/share/cephalix/templates/Defaults.ini"
-# Attributes must be cleaned befor writing into defaults
-TO_CLEAN = ( "uuid", "name", "type", "domain", "adminPW" )
 # Attributes which must not be changed
 READONLY = ( "CEPHALIX", "CEPHALIX_PATH", "CEPHALIX_DOMAIN", "CCODE", "LANGUAGE", "NTP", "ZADMIN" )
 

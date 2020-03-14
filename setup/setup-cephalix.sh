@@ -59,11 +59,11 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "ipVPN": "$ipVPN",
   "locality": "$locality",
   "name": "Institute Template",
-  "network": "$network/$netmask",
+  "internalNetwork": "$network/$netmask",
   "serverNetwork": "$network/24",
   "nmTrNet": "$nmTrNet",
   "regCode": "",
-  "type": "gymnasium",
+  "instituteType": "gymnasium",
   "uuid": "template"
 }
 EOF
