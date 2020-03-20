@@ -28,7 +28,7 @@ for key in READONLY:
     institute[key] = defaults[key]
 
 # create some networks
-network        = IPv4Network(institute['network'])
+network        = IPv4Network(institute['internalNetwork'])
 network_dhcp   = IPv4Network(institute['anonDhcpNetwork'])
 network_server = IPv4Network(institute['serverNetwork'])
 # calculate some network paramater

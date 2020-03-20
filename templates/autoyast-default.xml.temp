@@ -952,6 +952,7 @@ mkdir -p /mnt/etc/squid
 mkdir -p /mnt/etc/openvpn
 mkdir -p /mnt/etc/ssl/servercerts/certs
 mkdir -p /mnt/srv/salt/win/repo-ng
+mkdir -p /mnt/srv/salt/packages
 ]]></source>
       </script>
     </chroot-scripts>
