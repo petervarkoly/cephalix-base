@@ -26,7 +26,7 @@ if save_next_vpn:
 # Create next network if necessary
 if save_next:
     # create some networks
-    network        = IPv4Network(defaults['network'])
+    network        = IPv4Network(defaults['internalNetwork'])
     network_dhcp   = IPv4Network(defaults['anonDhcpNetwork'])
     network_server = IPv4Network(defaults['serverNetwork'])
     # calculate some network paramater
