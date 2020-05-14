@@ -41,6 +41,7 @@ if anon_dhcp_last == network.network_address + network.num_addresses - 1:
 institute['anonDhcpRange'] = "{} {}".format(anon_dhcp_first,anon_dhcp_last)
 institute['netmask']       = network.prefixlen
 institute['netmaskString'] = network.netmask
+institute['internalNetwork'] = network.network_address
 if 'WORKGROUP' not in institute:
     institute['WORKGROUP'] = institute['domain'].split('.')[0].upper()[0:15]
 

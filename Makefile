@@ -7,7 +7,7 @@ OSSSHARE        = $(DESTDIR)/usr/share/oss/
 TOPACKAGE       = Makefile etc setup tools templates plugins sbin README.md
 HERE            = $(shell pwd)
 PACKAGE         = cephalix-base
-REPO		= /data1/OSC/home:varkoly:OSS-4-1:leap15.1/
+REPO		= /home/OSC/home:varkoly:CRANIX-4-2
 
 install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
