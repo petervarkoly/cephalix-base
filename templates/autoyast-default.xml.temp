@@ -404,7 +404,7 @@ CRANIX_RESET_REGISTER_PASSWORD="no"
 ## Type:	string
 ## Default:
 # This services have be monitored.
-CRANIX_MONITOR_SERVICES="amavis apache2 cups dhcpd ntp crx-api crx_get_screenshots crx_salt_event_watcher postfix salt-master samba squid"
+CRANIX_MONITOR_SERVICES="amavis apache2 cups dhcpd ntp cranix-api crx_get_screenshots crx_salt_event_watcher postfix salt-master samba squid"
 
 ## Type:	yesno
 ## Default:	no
@@ -1006,7 +1006,7 @@ sed -i 's/^FW_DEV_INT=.*/FW_DEV_INT="eth0 tun0"/' /etc/sysconfig/SuSEfirewall2
 sed -i 's/connectip/###ipVPN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 sed -i 's/zadminip/###ZADMIN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 #Install some late packages:
-zypper -n install crx-clone crx-proxy
+zypper -n install cranix-clone cranix-proxy
 
 #Activate some services
 for i in $( cat /usr/share/cranix/setup/services-to-enable )
@@ -1042,7 +1042,7 @@ reboot
       <pacakge>mariadb-client</pacakge>
       <pacakge>mariadb-errormessages</pacakge>
       <package>openvpn</package>
-      <package>crx-base</package>
+      <package>cranix-base</package>
       <package>SuSEfirewall2</package>
       <package>salt</package>
       <package>salt-api</package>
@@ -1057,7 +1057,7 @@ reboot
       <package>wget</package>
       <package>xinetd</package>
       <package>xfsprogs</package>
-      <package>yast2-crx-setup</package>
+      <package>yast2-cranix-setup</package>
       <package>yast2-firstboot</package>
     </packages>
     <remove-packages config:type="list">
