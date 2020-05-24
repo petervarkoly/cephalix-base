@@ -1,5 +1,5 @@
 #!/bin/bash
-STATE=$( cat /var/adm/oss/check_quotas )
+STATE=$( cat /var/adm/cranix/check_quotas )
 echo $STATE
  [ "$STATE" != "${STATE//Critical:}" ] && exit 2;
  [ "$STATE" != "${STATE//Warning:}" ]  && exit 1;

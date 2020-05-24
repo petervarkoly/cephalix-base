@@ -4,7 +4,7 @@ gencert() {
     # Try to get a valid hostname...
     CN=$NAME.$DOMAIN
     if [ $NAME = "CA" ]; then
-        CN="OSS_Default_CA";
+        CN="CEPHALX_Default_CA";
     fi
     if [ "$SHORT" ]; then
        CN=$NAME
@@ -157,11 +157,11 @@ usage() {
 CLEAN=""
 NAME=
 DOMAIN=
-comment="OSS Server Certificate"
+comment="CRANIX Server Certificate"
 C="DE"
 ST="Bavaria"
 L="Nurember"
-U="OSS Server"
+U="CRANIX Server"
 O=
 SHORT=
 

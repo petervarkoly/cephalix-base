@@ -3,13 +3,13 @@ import json
 import os
 import sys
 from configobj import ConfigObj
-config   = ConfigObj("/opt/oss-java/conf/oss-api.properties")
+config   = ConfigObj("/opt/cranix-java/conf/cranix-api.properties")
 passwd   = config['de.openschoolserver.dao.User.Register.Password']
 dyndns=""
 
 #Create an open task if something goes wrong
 def create_open_task():
-  TASK = "/var/adm/oss/opentasks/100-validate-regcode-" + os.popen('uuidgen -t').read().rstrip()
+  TASK = "/var/adm/cranix/opentasks/100-validate-regcode-" + os.popen('uuidgen -t').read().rstrip()
   with open(TASK, "w") as f:
     f.write(json.dumps(dyndns,sort_keys=True,ensure_ascii=False,encoding="utf-8"))
 

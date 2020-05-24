@@ -1,7 +1,7 @@
 #! /bin/sh
 
 
-CONFIG=/etc/sysconfig/schoolserver
+CONFIG=/etc/sysconfig/cranix
 STATE_OK=0
 STATE_WARNING=1
 STATE_CRITICAL=2
@@ -11,7 +11,7 @@ CHECKFILE=/tmp/backup_check
 CHECKWARNING=/tmp/backup_warn
 CHECKMOUNT=/tmp/backup_mount
 CHECKFIN=/tmp/backup_fin
-#LASTLINE=$( tail --lines=1 /var/log/oss-backup.log )
+#LASTLINE=$( tail --lines=1 /var/log/crx-backup.log )
 
 
 #echo $DATE
@@ -19,20 +19,20 @@ CHECKFIN=/tmp/backup_fin
 #echo $DIFF
 
 . $CONFIG
-if [ $SCHOOL_BACKUP = "no" ];then
+if [ $CRANIX_BACKUP = "no" ];then
 	echo "OK: Kein Backup eingerichtet"
 	exit $STATE_OK
 else 
 
-LASTLINE=$( tail --lines=1 /var/log/oss-backup.log )
+LASTLINE=$( tail --lines=1 /var/log/crx-backup.log )
 DATE=`date +%s`
-CTIME=`stat -c %Y '/var/log/oss-backup.log'`
+CTIME=`stat -c %Y '/var/log/crx-backup.log'`
 DIFF=$(($DATE-$CTIME))
 
 # Wenn backup älter als 10 Tage (in sekunden) dann exit_Critical
 if [ "$DIFF" -le 864000 ];then
 
-	tail --lines=10 /var/log/oss-backup.log > $CHECKFILE
+	tail --lines=10 /var/log/crx-backup.log > $CHECKFILE
 
 grep "WARNING" $CHECKFILE > $CHECKWARNING
 grep "Unable to mount" $CHECKFILE > $CHECKMOUNT 
@@ -61,7 +61,7 @@ fi
 fi
 
 #if [ ! -e  "$CHECKFILE" ]; then
-#        touch /var/log/oss-backup.log_check
+#        touch /var/log/crx-backup.log_check
 #        cat "$LOGFILE" > "$CHECKFILE"
 #fi
 #

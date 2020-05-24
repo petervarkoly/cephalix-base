@@ -3,7 +3,7 @@
 #
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
-OSSSHARE        = $(DESTDIR)/usr/share/oss/
+CRANIXHARE      = $(DESTDIR)/usr/share/cranix/
 TOPACKAGE       = Makefile etc setup tools templates plugins sbin README.md
 HERE            = $(shell pwd)
 PACKAGE         = cephalix-base
@@ -11,7 +11,7 @@ REPO		= /home/OSC/home:varkoly:CRANIX-4-2
 
 install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
-	mkdir -p $(OSSSHARE)/plugins/
+	mkdir -p $(CRANIXHARE)/plugins/
 	mkdir -p $(DESTDIR)/etc
 	mkdir -p $(DESTDIR)/usr/sbin
 	mkdir -p $(DESTDIR)/$(FILLUPDIR)
@@ -19,7 +19,7 @@ install:
 	rsync -a tools/     $(SHARE)/tools/
 	rsync -a templates/ $(SHARE)/templates/
 	rsync -a setup/     $(SHARE)/setup/
-	rsync -a plugins/   $(OSSSHARE)/plugins/
+	rsync -a plugins/   $(CRANIXHARE)/plugins/
 	install -m 755 sbin/* $(DESTDIR)/usr/sbin/
 
 dist:

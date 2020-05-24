@@ -5,7 +5,7 @@ import sys
 
 #Create an open task if something goes wrong
 def create_open_task(institute):
-  TASK = "/var/adm/oss/opentasks/100-modify-institute-" + os.popen('uuidgen -t').read().rstrip()
+  TASK = "/var/adm/cranix/opentasks/100-modify-institute-" + os.popen('uuidgen -t').read().rstrip()
   with open(TASK, "w") as f:
     f.write(json.dumps(institute,sort_keys=True,ensure_ascii=False,encoding="utf-8"))
 
