@@ -959,6 +959,7 @@ mkdir -p /mnt/etc/openvpn
 mkdir -p /mnt/etc/ssl/servercerts/certs
 mkdir -p /mnt/srv/salt/win/repo-ng
 mkdir -p /mnt/srv/salt/packages
+sed -i 's/LINK_REQUIRED=.*/LINK_REQUIRED="no"/' /mnt/etc/sysconfig/network/config
 ]]></source>
       </script>
     </chroot-scripts>
