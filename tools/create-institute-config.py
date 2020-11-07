@@ -68,7 +68,7 @@ if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain']
     os.system(command)
     command = cmd + ' -D ' + institute['domain'] + ' -N admin'
     os.system(command)
-    command = cmd + ' -D ' + institute['domain'] + ' -N schoolserver'
+    command = cmd + ' -D ' + institute['domain'] + ' -N cranix'
     os.system(command)
 if not os.path.isfile(CEPHALIX_PATH+'CA_MGM/certs/' + ident + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem'):
     cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
@@ -85,8 +85,8 @@ SSLVARS['REPLACE-VPN-KEY']    = open(CEPHALIX_PATH + 'CA_MGM/certs/' + ident + '
 SSLVARS['REPLACE-VPN-CERT']   = open(CEPHALIX_PATH + 'CA_MGM/certs/' + ident + '.' + institute['CEPHALIX_DOMAIN'] + '.cert.pem','r').read()
 SSLVARS['REPLACE-ADMIN-KEY']  = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + institute['domain'] + '.key.pem','r').read()
 SSLVARS['REPLACE-ADMIN-CERT'] = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + institute['domain'] + '.cert.pem','r').read()
-SSLVARS['REPLACE-SCHOOL-KEY'] = open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.' + institute['domain'] + '.key.pem','r').read()
-SSLVARS['REPLACE-SCHOOL-CERT']= open(CEPHALIX_PATH + 'CA_MGM/certs/schoolserver.' + institute['domain'] + '.cert.pem','r').read()
+SSLVARS['REPLACE-SCHOOL-KEY'] = open(CEPHALIX_PATH + 'CA_MGM/certs/cranix.' + institute['domain'] + '.key.pem','r').read()
+SSLVARS['REPLACE-SCHOOL-CERT']= open(CEPHALIX_PATH + 'CA_MGM/certs/cranix.' + institute['domain'] + '.cert.pem','r').read()
 
 institute['network']       = network.network_address
 xml_content = open(xml_file,'r').read()

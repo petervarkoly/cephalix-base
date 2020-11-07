@@ -1,23 +1,23 @@
 #!/bin/bash
 
-mkdir -p /etc/ssl/servercerts/certs/
+mkdir -p /etc/openvpn/CEPHALIX
 zypper -n install openvpn
 cat <<EOF >> /root/.ssh/authorized_keys
 REPLACE-SSHKEY
 EOF
 
-cat <<EOF > /etc/ssl/servercerts/vpncacert.pem
+cat <<EOF > /etc/openvpn/CEPHALIX/vpncacert.pem
 REPLACE-CA-CERT
 EOF
 
-cat <<EOF > /etc/ssl/servercerts/vpncert.pem
+cat <<EOF > /etc/openvpn/CEPHALIX/vpncert.pem
 REPLACE-VPN-CERT
 EOF
 
-cat <<EOF > /etc/ssl/servercerts/vpnkey.pem
+cat <<EOF > /etc/openvpn/CEPHALIX/vpnkey.pem
 REPLACE-VPN-KEY
 EOF
-chmod 640 /etc/ssl/servercerts/vpnkey.pem
+chmod 640 /etc/openvpn/CEPHALIX/vpnkey.pem
 
 cat <<EOF > /etc/openvpn/CEPHALIX.conf
 client
@@ -31,9 +31,9 @@ comp-lzo
 verb 4
 mute 20
 mute-replay-warnings
-ca   /etc/ssl/servercerts/vpncacert.pem
-cert /etc/ssl/servercerts/vpncert.pem
-key  /etc/ssl/servercerts/vpnkey.pem
+ca   /etc/openvpn/CEPHALIX/vpncacert.pem
+cert /etc/openvpn/CEPHALIX/vpncert.pem
+key  /etc/openvpn/CEPHALIX/vpnkey.pem
 proto udp
 remote ###CEPHALIX### 1194
 nobind

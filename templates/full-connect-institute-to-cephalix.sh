@@ -1,6 +1,7 @@
 #!/bin/bash
 
 mkdir -p /etc/ssl/servercerts/certs/
+mkdir -p /etc/openvpn/CEPHALIX/
 zypper -n install openvpn cephalix-client
 cat <<EOF >> /root/.ssh/authorized_keys
 REPLACE-SSHKEY
@@ -10,14 +11,18 @@ cat <<EOF > /etc/ssl/servercerts/cacert.pem
 REPLACE-CA-CERT
 EOF
 
-cat <<EOF > /etc/ssl/servercerts/vpncert.pem
+cat <<EOF > /etc/openvpn/CEPHALIX/cacert.pem
+REPLACE-CA-CERT
+EOF
+
+cat <<EOF > /etc/openvpn/CEPHALIX/vpncert.pem
 REPLACE-VPN-CERT
 EOF
 
-cat <<EOF > /etc/ssl/servercerts/vpnkey.pem
+cat <<EOF > /etc/openvpn/CEPHALIX/vpnkey.pem
 REPLACE-VPN-KEY
 EOF
-chmod 640 /etc/ssl/servercerts/vpnkey.pem
+chmod 640 /etc/openvpn/CEPHALIX/vpnkey.pem
 
 cat <<EOF > /etc/ssl/servercerts/certs/admin.###domain###.cert.pem
 REPLACE-ADMIN-CERT
@@ -28,11 +33,11 @@ REPLACE-ADMIN-KEY
 EOF
 chmod 640 /etc/ssl/servercerts/certs/admin.###domain###.key.pem
 
-cat <<EOF > /etc/ssl/servercerts/certs/schoolserver.###domain###.cert.pem 
+cat <<EOF > /etc/ssl/servercerts/certs/cranix.###domain###.cert.pem
 REPLACE-SCHOOL-CERT
 EOF
 
-cat <<EOF >> /etc/ssl/servercerts/certs/schoolserver.###domain###.key.pem
+cat <<EOF >> /etc/ssl/servercerts/certs/cranix.###domain###.key.pem
 REPLACE-SCHOOL-KEY
 EOF
 
@@ -48,9 +53,9 @@ comp-lzo
 verb 4
 mute 20
 mute-replay-warnings
-ca   /etc/ssl/servercerts/cacert.pem
-cert /etc/ssl/servercerts/vpncert.pem
-key  /etc/ssl/servercerts/vpnkey.pem
+ca   /etc/openvpn/CEPHALIX/cacert.pem
+cert /etc/openvpn/CEPHALIX/vpncert.pem
+key  /etc/openvpn/CEPHALIX/vpnkey.pem
 proto udp
 remote ###CEPHALIX### 1194
 nobind

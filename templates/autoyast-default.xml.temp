@@ -72,9 +72,9 @@ comp-lzo
 verb 4
 mute 20
 mute-replay-warnings
-ca   /etc/ssl/servercerts/cacert.pem
-cert /etc/ssl/servercerts/vpncert.pem
-key  /etc/ssl/servercerts/vpnkey.pem
+ca   /etc/openvpn/CEPHALIX/cacert.pem
+cert /etc/openvpn/CEPHALIX/vpncert.pem
+key  /etc/openvpn/CEPHALIX/vpnkey.pem
 proto udp
 remote ###CEPHALIX### 1194
 nobind
@@ -96,14 +96,21 @@ nobind
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/vpncert.pem</file_path>
+      <file_path>/etc/openvpn/CEPHALIX/cacert.pem</file_path>
+      <file_owner>root:root</file_owner>
+      <file_permissions>644</file_permissions>
+      <file_contents><![CDATA[REPLACE-CA-CERT
+]]></file_contents>
+    </config_file>
+    <config_file>
+      <file_path>/etc/openvpn/CEPHALIX/vpncert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-VPN-CERT
 ]]></file_contents>
     </config_file>
     <config_file>
-      <file_path>/etc/ssl/servercerts/vpnkey.pem</file_path>
+      <file_path>/etc/openvpn/CEPHALIX/vpnkey.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-VPN-KEY
@@ -272,7 +279,7 @@ CRANIX_IS_DEMO="no"
 CRANIX_MAILSERVER="###ipMail###"
 
 ## Type:	string
-## Default:	Extis School
+## Default:	Canix School
 # The name of the cranix.
 CRANIX_NAME="###name###"
 
@@ -352,7 +359,7 @@ CRANIX_NETBIOSNAME="admin"
 CRANIX_TYPE="###instituteType###"
 
 ## Type:	string readonly
-## Default:	EXTIS
+## Default:	CRANIX
 # The windows domain name of the cranix.
 CRANIX_WORKGROUP="###WORKGROUP###"
 
@@ -955,7 +962,7 @@ close(FILE);
         <source><![CDATA[
 mkdir -m 700 -p /mnt/root/.ssh
 mkdir -p /mnt/etc/squid
-mkdir -p /mnt/etc/openvpn
+mkdir -p /mnt/etc/openvpn/CEPHALIX
 mkdir -p /mnt/etc/ssl/servercerts/certs
 mkdir -p /mnt/srv/salt/win/repo-ng
 mkdir -p /mnt/srv/salt/packages
