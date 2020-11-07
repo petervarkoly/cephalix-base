@@ -411,7 +411,7 @@ CRANIX_RESET_REGISTER_PASSWORD="no"
 ## Type:	string
 ## Default:
 # This services have be monitored.
-CRANIX_MONITOR_SERVICES="amavis apache2 cups dhcpd ntp cranix-api crx_get_screenshots crx_salt_event_watcher postfix salt-master samba squid"
+CRANIX_MONITOR_SERVICES="amavis apache2 cups dhcpd ntp cranix-api crx_get_screenshots crx_salt_event_watcher postfix salt-master samba-ad squid"
 
 ## Type:	yesno
 ## Default:	no
