@@ -1,0 +1,1 @@
+10 5,16 * * * * root /usr/sbin/cephalix_get_status_of_institutes.sh &> /dev/null
