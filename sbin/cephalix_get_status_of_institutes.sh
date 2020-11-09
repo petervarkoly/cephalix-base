@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 for id in $( echo "SELECT id from CephalixInstitutes where not deleted='Y' " | /usr/bin/mysql  CRX )
 do
