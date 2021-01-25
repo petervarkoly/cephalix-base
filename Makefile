@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020 Peter Varkoly Nürnberg, Germany.  All rights reserved.
+# Copyright (C) 2021 Peter Varkoly <pvarkoly@cephalix.eu> Nürnberg, Germany.  All rights reserved.
 #
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cephalix/
@@ -7,7 +7,7 @@ CRANIXHARE      = $(DESTDIR)/usr/share/cranix/
 TOPACKAGE       = Makefile etc setup tools templates plugins sbin README.md
 HERE            = $(shell pwd)
 PACKAGE         = cephalix-base
-REPO		= /home/OSC/home:varkoly:CRANIX-4-2
+REPO		= /home/OSC/home:varkoly:CRANIX-4-2:leap15.2
 
 install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
