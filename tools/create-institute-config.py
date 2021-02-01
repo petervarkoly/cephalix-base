@@ -58,25 +58,22 @@ if institute["ipAdmin"] != institute['ipVPN']:
         if institute.get('fullrouting',False):
             ccd.write("iroute {} {}".format(network.network_address, network.netmask))
 # Handle Certificates
-if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain'] + '.key.pem' ):
-    cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
-    if 'state' in institute:
-        cmd += ' -S "' + institute['state'] + '"'
-    if 'locality' in  institute:
-        cmd += ' -L "' + institute['locality'] + '"'
+cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
+if 'state' in institute:
+    cmd += ' -S "' + institute['state'] + '"'
+if 'locality' in  institute:
+    cmd += ' -L "' + institute['locality'] + '"'
+if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/' + ident +'.' + institute['CEPHALIX_DOMAIN'] + '.key.pem' ):
     command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + ident + '" -s'
     os.system(command)
+if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/admin.' + institute['domain'] + '.key.pem' ):
     command = cmd + ' -D ' + institute['domain'] + ' -N admin'
     os.system(command)
+if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/cranix.' + institute['domain'] + '.key.pem' ):
     command = cmd + ' -D ' + institute['domain'] + ' -N cranix'
     os.system(command)
-if not os.path.isfile(CEPHALIX_PATH+'CA_MGM/certs/' + ident + '.' + institute['CEPHALIX_DOMAIN'] + '.key.pem'):
-    cmd = CEPHALIX_PATH + '/create_server_certificates.sh -P ' + CEPHALIX_PATH + ' -O "' + institute['name'] + '"'
-    if 'state' in institute:
-        cmd += ' -S "' + institute['state'] + '"'
-    if 'locality' in  institute:
-        cmd += ' -L "' + institute['locality'] + '"'
-    command = cmd + ' -D ' + institute['CEPHALIX_DOMAIN'] + ' -N "' + ident + '" -s'
+if not os.path.isfile(CEPHALIX_PATH+'/CA_MGM/certs/proxy.' + institute['domain'] + '.key.pem' ):
+    command = cmd + ' -D ' + institute['domain'] + ' -N proxy'
     os.system(command)
 
 SSLVARS['REPLACE-SSHKEY']     = open('/root/.ssh/id_rsa.pub','r').read()
@@ -87,6 +84,8 @@ SSLVARS['REPLACE-ADMIN-KEY']  = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + ins
 SSLVARS['REPLACE-ADMIN-CERT'] = open(CEPHALIX_PATH + 'CA_MGM/certs/admin.' + institute['domain'] + '.cert.pem','r').read()
 SSLVARS['REPLACE-SCHOOL-KEY'] = open(CEPHALIX_PATH + 'CA_MGM/certs/cranix.' + institute['domain'] + '.key.pem','r').read()
 SSLVARS['REPLACE-SCHOOL-CERT']= open(CEPHALIX_PATH + 'CA_MGM/certs/cranix.' + institute['domain'] + '.cert.pem','r').read()
+SSLVARS['REPLACE-PROXY-KEY']  = open(CEPHALIX_PATH + 'CA_MGM/certs/proxy.' + institute['domain'] + '.key.pem','r').read()
+SSLVARS['REPLACE-PROXY-CERT'] = open(CEPHALIX_PATH + 'CA_MGM/certs/proxy.' + institute['domain'] + '.cert.pem','r').read()
 
 institute['network']       = network.network_address
 xml_content = open(xml_file,'r').read()

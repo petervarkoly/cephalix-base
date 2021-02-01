@@ -145,6 +145,20 @@ nobind
 ]]></file_contents>
     </config_file>
     <config_file>
+      <file_path>/etc/ssl/servercerts/certs/proxy.###domain###.cert.pem</file_path>
+      <file_owner>root:root</file_owner>
+      <file_permissions>644</file_permissions>
+      <file_contents><![CDATA[REPLACE-PROXY-CERT
+]]></file_contents>
+    </config_file>
+    <config_file>
+      <file_path>/etc/ssl/servercerts/certs/proxy.###domain###.key.pem</file_path>
+      <file_owner>root:root</file_owner>
+      <file_permissions>640</file_permissions>
+      <file_contents><![CDATA[REPLACE-PROXY-KEY
+]]></file_contents>
+    </config_file>
+    <config_file>
       <file_path>/etc/sysconfig/cranix</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
