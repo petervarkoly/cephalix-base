@@ -15,10 +15,12 @@ ip=institute['ipVPN']
 cephalixPW=institute['cephalixPW'] 
 adminPW=institute['adminPW'] 
 
-cmd="ssh " + ip + "/usr/bin/samba-tool user setpassword cephalix --newpassword='" + cephalixPW +"'"
-if os.system(cmd) !=0:
-  create_open_task(institute)
+if cephalixPW != "":
+  cmd="ssh " + ip + " /usr/bin/samba-tool user setpassword cephalix --newpassword='" + cephalixPW +"'"
+  if os.system(cmd) !=0:
+    create_open_task(institute)
 
-cmd="ssh " + ip + "/usr/bin/samba-tool user setpassword Administrator --newpassword='" + adminPW +"'"
-if os.system(cmd) !=0:
-  create_open_task(institute)
+if adminPW != "":
+  cmd="ssh " + ip + " /usr/bin/samba-tool user setpassword Administrator --newpassword='" + adminPW +"'"
+  if os.system(cmd) !=0:
+    create_open_task(institute)
