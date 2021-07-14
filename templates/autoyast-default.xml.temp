@@ -177,10 +177,20 @@ nobind
 # Make backup from the CRANIX.
 CRANIX_BACKUP="no"
 
+## Type:        string
+## Default:     23456
+# On which day make backup from the CRANIX.
+CRANIX_BACKUP_DAYS="23456"
+
 ## Type:	yesno
 ## Default:	no
 # Set this variable to yes if your backup medium can not save file access control lists (ACLs).
 CRANIX_BACKUP_CAN_NOT_SAVE_ACL="no"
+
+## Type:        yesno
+## Default:     no
+# Set this variable to yes if your backup medium can not save file owner and rights.
+CRANIX_BACKUP_CAN_NOT_SAVE_OWNER="no"
 
 ## Type:        string
 ## Default:
@@ -193,14 +203,9 @@ CRANIX_BACKUP_CUSTOM_SCRIPTS=""
 CRANIX_BACKUP_CHECK_MOUNT="yes"
 
 ## Type:	yesno
-## Default:	yes
+## Default:	no
 # Make backup from the ctool images and configuration.
-CRANIX_BACKUP_CTOOL="yes"
-
-## Type:        string
-## Default:     23456
-# On which day make backup from the CRANIX.
-CRANIX_BACKUP_DAYS="23456"
+CRANIX_BACKUP_CTOOL="no"
 
 ## Type:	yesno
 ## Default:	yes
@@ -223,9 +228,9 @@ CRANIX_BACKUP_HOME="yes"
 CRANIX_BACKUP_INC_DIR="/mnt/backup"
 
 ## Type:	yesno
-## Default:	yes
+## Default:	no
 # Make backup from mail system.
-CRANIX_BACKUP_MAIL="yes"
+CRANIX_BACKUP_MAIL="no"
 
 ## Type:        string
 ## Default:
@@ -282,20 +287,10 @@ CRANIX_HOME_BASE="/home"
 # This varibale shows if the CRANIX was configured as a gateway.
 CRANIX_ISGATE="yes"
 
-## Type:	yesno readonly
-## Default:	no
-# Is this a demo version.
-CRANIX_IS_DEMO="no"
-
 ## Type:	string readonly
 ## Default:	"172.16.0.3"
 # IP-address of the mail server and groupware of the CRANIX.
 CRANIX_MAILSERVER="###ipMail###"
-
-## Type:	string
-## Default:	Canix School
-# The name of the cranix.
-CRANIX_NAME="###name###"
 
 ## Type:	string readonly
 ## Default:	"16"
@@ -316,11 +311,6 @@ CRANIX_NETWORK="###internalNetwork###"
 ## Default:	
 # The default gateway for the internal net, not for the server.
 CRANIX_NET_GATEWAY="###ipGateway###"
-
-## Type:	string readonly
-## Default:	"172.16.0.4"
-# IP-address of the print server of the CRANIX.
-CRANIX_PRINTSERVER="###ipPrint###"
 
 ## Type:	string readonly
 ## Default:	"172.16.0.5"
@@ -367,11 +357,6 @@ CRANIX_USE_DHCP="yes"
 # The windows netbios name of the CRANIX.
 CRANIX_NETBIOSNAME="admin"
 
-## Type:	string(primary,secondary,real,gymnasium,work,other) readonly
-## Default:	gymnasium
-# The type of the cranix.
-CRANIX_TYPE="###instituteType###"
-
 ## Type:	string readonly
 ## Default:	CRANIX
 # The windows domain name of the cranix.
@@ -398,14 +383,29 @@ CRANIX_DOMAIN="###domain###"
 CRANIX_SALT_PKG_URL="http://repo.cephalix.eu/salt-packages"
 
 ## Type:        string readonly
-## Default:     http://repo.cephalix.eu/CRANIX
+## Default:     http://repo.cephalix.eu
 # Url to the updates
 CRANIX_UPDATE_URL="http://repo.cephalix.eu"
+
+## Type:        string(dns,proxy)
+## Default:     dns
+# The type of the internet filter.
+CRANIX_INTERNET_FILTER="dns"
 
 ########################################################################
 ## Path:        Network/Server/Settings
 ## Description: Configuration of the CRANIX: Settings
 ########################################################################
+
+## Type:	string
+## Default:	gymnasium
+# The type of the cranix.
+CRANIX_TYPE="###instituteType###"
+
+## Type:	string
+## Default:	Canix School
+# The name of the cranix.
+CRANIX_NAME="###name###"
 
 ## Type:	yesno
 ## Default:	no
@@ -425,7 +425,7 @@ CRANIX_RESET_REGISTER_PASSWORD="no"
 ## Type:	string
 ## Default:
 # This services have be monitored.
-CRANIX_MONITOR_SERVICES="amavis apache2 cups dhcpd ntp cranix-api crx_get_screenshots crx_salt_event_watcher postfix salt-master samba-ad squid"
+CRANIX_MONITOR_SERVICES="amavis apache2 cups dhcpd chronyd cranix-api crx_salt_event_watcher mysql postfix salt-master samba-ad squid  vsftpd xinetd"
 
 ## Type:	yesno
 ## Default:	no
@@ -472,16 +472,6 @@ CRANIX_MAIL_TEACHER_QUOTA="25"
 # The registration code of the CRANIX.
 CRANIX_REG_CODE="###regCode###"
 
-## Type:	yesno
-## Default:	no
-# Students may download at the admin web-site.
-CRANIX_STUDENTS_MAY_DOWNLOAD="no"
-
-## Type:	yesno
-## Default:	no
-# Students may upload at the admin web-site.
-CRANIX_STUDENTS_MAY_UPLOAD="no"
-
 ## Type:        string
 ## Default:     https://support.cephalix.de/support
 # The support URL of the CEPHALIX or OTRS system the ticket will be sent to via REST-API.
@@ -496,7 +486,7 @@ CRANIX_SUPPORT_MAIL_ADDRESS="support@cephalix.eu"
 ## Type:	yesno
 ## Default:     yes	
 # If this variable is set to yes, students may login on more than one workstation.
-CRANIX_ALLOW_STUDENTS_MULTIPLE_LOGIN="no"
+CRANIX_ALLOW_STUDENTS_MULTIPLE_LOGIN="yes"
 
 ## Type:	yesno
 ## Default:     yes	
@@ -508,11 +498,6 @@ CRANIX_ALLOW_MULTIPLE_LOGIN="yes"
 # If this variable is set to yes, some directories from the windows profiles will be moved to home.
 # Documents Downloads Faworites Pictures Desktop Videos Music
 CRANIX_MOVE_PROFILE_TO_HOME="yes"
-
-## Type:        yesno
-## Default:     no
-# Students may not change password.
-CRANIX_MAY_NOT_CHANGE_PASSWORD="no"
 
 ## Type:        integer(10:16)
 ## Default:     10
@@ -539,6 +524,53 @@ CRANIX_STRING_CONVERT_TYPE="telex"
 # In which subdirectories in /home will be searched for files when deleting a user.
 CRANIX_SEARCH_FOR_DELETE="all groups"
 
+## Type:                integer
+## Default:             "90"
+# cranix-api session time out in minutes
+CRANIX_SESSION_TIMEOUT="90"
+
+## Type:        yesno
+## Default:     yes
+# Remove all network printers from the users profile by the login process
+CRANIX_CLEAN_UP_PRINTERS="yes"
+
+## Type:        yesno
+## Default:     yes
+# If this variable is yes the admin website allows the browser to use the saved passwords.
+CRANIX_ALLOW_SAVE_PASSWORD="no"
+
+## Type:        yesno
+## Default:     no
+# If this variable is yes adhoc rooms will be created for all classes.
+# This happens when creating a new class or by importing the stundents.
+# Existing adhoc rooms will be cleaned an filled by the exiting devices
+CRANIX_MAINTAIN_ADHOC_ROOM_FOR_CLASSES="no"
+
+## Type:                integer
+## Default:             "1"
+# How much devices may a user register in a class adhoc room
+CRANIX_CLASS_ADHOC_DEVICE_PRO_USER="2"
+
+## Type:                integer
+## Default:             "32"
+# How much devices can be registered in a class adhoc room
+CRANIX_CLASS_ADHOC_DEVICE_COUNT="64"
+
+## Type:               string
+## Default:             ""
+# The netwrork in which the AdHoc rooms will be created.
+CRANIX_CLASS_ADHOC_NETWORK=""
+
+## Type:        yesno
+## Default:     yes
+# This variable allows or disables windows clients to download updates.
+CRANIX_ALLOW_WINDOWS_UPDATES="no"
+
+## Type:        string
+## Default:
+# DNS Domain of the institute for wich official certificate was created.
+# This can be empty if this is the normal DNS domain
+CRANIX_CERT_DOMAIN=""
 ]]></file_contents>
     </config_file>
     <config_file>
@@ -592,7 +624,8 @@ pubmed.gov
         <device>eth1</device>
         <ipaddr>###ipTrNet###</ipaddr>
         <netmask>###nmTrNet###</netmask>
-        <startmode>onboot</startmode>
+	<startmode>onboot</startmode>
+	<zone>external</zone>
       </interface>
     </interfaces>
     <routing>
@@ -608,35 +641,25 @@ pubmed.gov
     </routing>
   </networking>
   <ntp-client>
-    <ntp_policy>auto</ntp_policy>
-    <ntp_servers config:type="list">
-      <ntp_server>
-        <iburst config:type="boolean">false</iburst>
+    <peers config:type="list">
+      <peer>
         <address>###NTP###</address>
-        <offline config:type="boolean">true</offline>
-      </ntp_server>
-    </ntp_servers>
-    <ntp_sync>systemd</ntp_sync>
+        <comment/>
+        <options> iburst</options>
+        <type>server</type>
+      </peer>
+    </peers>
+    <start_at_boot config:type="boolean">true</start_at_boot>
+    <start_in_chroot config:type="boolean">false</start_in_chroot>
+    <sync_interval config:type="integer">5</sync_interval>
+    <synchronize_time config:type="boolean">false</synchronize_time>
   </ntp-client>
   <firewall>
-    <FW_ALLOW_FW_BROADCAST_DMZ>no</FW_ALLOW_FW_BROADCAST_DMZ>
-    <FW_ALLOW_FW_BROADCAST_EXT>no</FW_ALLOW_FW_BROADCAST_EXT>
-    <FW_ALLOW_FW_BROADCAST_INT>no</FW_ALLOW_FW_BROADCAST_INT>
-    <FW_DEV_EXT>eth1</FW_DEV_EXT>
-    <FW_DEV_INT>eth0</FW_DEV_INT>
-    <FW_IGNORE_FW_BROADCAST_DMZ>no</FW_IGNORE_FW_BROADCAST_DMZ>
-    <FW_IGNORE_FW_BROADCAST_EXT>no</FW_IGNORE_FW_BROADCAST_EXT>
-    <FW_IGNORE_FW_BROADCAST_INT>no</FW_IGNORE_FW_BROADCAST_INT>
-    <FW_LOG_ACCEPT_ALL>no</FW_LOG_ACCEPT_ALL>
-    <FW_LOG_ACCEPT_CRIT>yes</FW_LOG_ACCEPT_CRIT>
-    <FW_LOG_DROP_ALL>no</FW_LOG_DROP_ALL>
-    <FW_LOG_DROP_CRIT>yes</FW_LOG_DROP_CRIT>
     <enable_firewall config:type="boolean">true</enable_firewall>
     <start_firewall config:type="boolean">true</start_firewall>
   </firewall>
   <partitioning config:type="list">
     <drive>
-      <disklabel>msdos</disklabel>
       <enable_snapshots config:type="boolean">true</enable_snapshots>
       <initialize config:type="boolean">true</initialize>
       <partitions config:type="list">
@@ -677,7 +700,6 @@ pubmed.gov
     </drive>
     <drive>
       <device>/dev/system</device>
-      <disklabel>msdos</disklabel>
       <initialize config:type="boolean">true</initialize>
       <partitions config:type="list">
         <partition>
@@ -721,7 +743,6 @@ pubmed.gov
     </drive>
     <drive>
       <device>/dev/data</device>
-      <disklabel>msdos</disklabel>
       <initialize config:type="boolean">true</initialize>
       <partitions config:type="list">
         <partition>
