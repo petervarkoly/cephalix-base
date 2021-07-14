@@ -1012,8 +1012,6 @@ sed -i 's/LINK_REQUIRED=.*/LINK_REQUIRED="no"/' /mnt/etc/sysconfig/network/confi
         <source><![CDATA[#!/bin/sh
 echo "IPADDR_mail='###ipMail###/###netmask###'
 LABEL_mail='mail'
-IPADDR_print='###ipPrint###/###netmask###'
-LABEL_print='print'
 IPADDR_proxy='###ipProxy###/###netmask###'
 LABEL_proxy='proxy'
  " >> /etc/sysconfig/network/ifcfg-eth0
@@ -1034,7 +1032,6 @@ sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
 echo '###ipAdmin###	admin.###domain### admin
 ###ipMail###	mailserver.###domain### mailserver
-###ipPrint###	printserver.###domain### printserver
 ###ipProxy###	proxy.###domain### proxy
 ###ZADMIN### zadmin' >> /etc/hosts
 
@@ -1068,6 +1065,7 @@ reboot
       <pattern>base</pattern>
       <pattern>x11</pattern>
       <pattern>kde</pattern>
+      <pattern>cranix</pattern>
       <pattern>sw_management</pattern>
     </patterns>
     <packages config:type="list">
@@ -1078,6 +1076,7 @@ reboot
       <package>gutenprint</package>
       <package>cephalix-client</package>
       <package>dhcp-server</package>
+      <package>firewalld</package>
       <package>icinga2</package>
       <package>icingaweb2</package>
       <package>mc</package>
@@ -1086,7 +1085,6 @@ reboot
       <pacakge>mariadb-errormessages</pacakge>
       <package>openvpn</package>
       <package>cranix-base</package>
-      <package>SuSEfirewall2</package>
       <package>salt</package>
       <package>salt-api</package>
       <package>salt-bash-completion</package>
@@ -1103,9 +1101,6 @@ reboot
       <package>yast2-cranix-setup</package>
       <package>yast2-firstboot</package>
     </packages>
-    <remove-packages config:type="list">
-      <package>firewalld</package>
-    </remove-packages>
   </software>
   <services-manager>
     <default_target>graphical</default_target>
