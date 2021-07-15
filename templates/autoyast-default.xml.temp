@@ -57,7 +57,7 @@ echo $VAL > /tmp/selected-device
     <timezone>Europe/Berlin</timezone>
   </timezone>
   <files config:type="list">
-    <config_file>
+    <file>
       <file_path>/etc/openvpn/CEPHALIX.conf</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
@@ -80,85 +80,85 @@ remote ###CEPHALIX### 1194
 nobind
 
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/root/.ssh/authorized_keys</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>600</file_permissions>
       <file_contents><![CDATA[REPLACE-SSHKEY
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/cacert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-CA-CERT
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/openvpn/CEPHALIX/cacert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-CA-CERT
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/openvpn/CEPHALIX/vpncert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-VPN-CERT
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/openvpn/CEPHALIX/vpnkey.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-VPN-KEY
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/certs/admin.###domain###.cert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-ADMIN-CERT
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/certs/admin.###domain###.key.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-ADMIN-KEY
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/certs/cranix.###domain###.cert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-SCHOOL-CERT
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/certs/cranix.###domain###.key.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-SCHOOL-KEY
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/certs/proxy.###domain###.cert.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
       <file_contents><![CDATA[REPLACE-PROXY-CERT
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/ssl/servercerts/certs/proxy.###domain###.key.pem</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>640</file_permissions>
       <file_contents><![CDATA[REPLACE-PROXY-KEY
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/sysconfig/cranix</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
@@ -572,8 +572,8 @@ CRANIX_ALLOW_WINDOWS_UPDATES="no"
 # This can be empty if this is the normal DNS domain
 CRANIX_CERT_DOMAIN=""
 ]]></file_contents>
-    </config_file>
-    <config_file>
+    </file>
+    <file>
       <file_path>/etc/squid/acl_no_auth</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>644</file_permissions>
@@ -596,12 +596,11 @@ suggestqueries.google.com
 ncbi.nlm.nih.gov
 pubmed.gov
 ]]></file_contents>
-    </config_file>
+    </file>
   </files>
   <networking>
     <dns>
       <dhcp_hostname config:type="boolean">false</dhcp_hostname>
-      <dhcp_resolv config:type="boolean">false</dhcp_resolv>
       <domain>###domain###</domain>
       <hostname>admin</hostname>
       <nameservers config:type="list">
@@ -624,8 +623,8 @@ pubmed.gov
         <device>eth1</device>
         <ipaddr>###ipTrNet###</ipaddr>
         <netmask>###nmTrNet###</netmask>
-	<startmode>onboot</startmode>
-	<zone>external</zone>
+        <startmode>onboot</startmode>
+        <zone>external</zone>
       </interface>
     </interfaces>
     <routing>
@@ -641,18 +640,15 @@ pubmed.gov
     </routing>
   </networking>
   <ntp-client>
-    <peers config:type="list">
-      <peer>
+    <ntp_policy>auto</ntp_policy>
+    <ntp_servers config:type="list">
+      <ntp_server>
         <address>###NTP###</address>
-        <comment/>
-        <options> iburst</options>
-        <type>server</type>
-      </peer>
-    </peers>
-    <start_at_boot config:type="boolean">true</start_at_boot>
-    <start_in_chroot config:type="boolean">false</start_in_chroot>
-    <sync_interval config:type="integer">5</sync_interval>
-    <synchronize_time config:type="boolean">false</synchronize_time>
+        <iburst config:type="boolean">false</iburst>
+        <offline config:type="boolean">false</offline>
+      </ntp_server>
+    </ntp_servers>
+    <ntp_sync>15</ntp_sync>
   </ntp-client>
   <firewall>
     <enable_firewall config:type="boolean">true</enable_firewall>
@@ -751,6 +747,23 @@ pubmed.gov
           <filesystem config:type="symbol">xfs</filesystem>
           <format config:type="boolean">true</format>
           <loop_fs config:type="boolean">false</loop_fs>
+          <lv_name>var</lv_name>
+          <mount>/var</mount>
+          <mountby config:type="symbol">device</mountby>
+          <partition_id config:type="integer">131</partition_id>
+          <partition_nr config:type="integer">1</partition_nr>
+          <pool config:type="boolean">false</pool>
+          <raid_options/>
+          <resize config:type="boolean">false</resize>
+          <size>150G</size>
+          <subvolumes config:type="list"/>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <crypt_fs config:type="boolean">false</crypt_fs>
+          <filesystem config:type="symbol">xfs</filesystem>
+          <format config:type="boolean">true</format>
+          <loop_fs config:type="boolean">false</loop_fs>
           <lv_name>srv</lv_name>
           <mount>/srv</mount>
           <mountby config:type="symbol">device</mountby>
@@ -759,7 +772,7 @@ pubmed.gov
           <pool config:type="boolean">false</pool>
           <raid_options/>
           <resize config:type="boolean">false</resize>
-          <size>40%</size>
+          <size>30%</size>
           <subvolumes config:type="list"/>
         </partition>
         <partition>
@@ -1033,26 +1046,17 @@ sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 echo '###ipAdmin###	admin.###domain### admin
 ###ipMail###	mailserver.###domain### mailserver
 ###ipProxy###	proxy.###domain### proxy
-###ZADMIN### zadmin' >> /etc/hosts
-
-#Adapt APACHE configuration
-
-#Allow Cephalix all access
-sed -i 's/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS="zadmin ###CEPHALIX###"/' /etc/sysconfig/SuSEfirewall2
-sed -i 's/^FW_DEV_EXT=.*/FW_DEV_EXT="eth1"/' /etc/sysconfig/SuSEfirewall2
-sed -i 's/^FW_DEV_INT=.*/FW_DEV_INT="eth0 tun0"/' /etc/sysconfig/SuSEfirewall2
+###ZADMIN### zadmin
+###ipTrNet###   extip' >> /etc/hosts
 
 #Configure Cephalix Access for Apache2
 sed -i 's/connectip/###ipVPN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 sed -i 's/zadminip/###ZADMIN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 #Install some late packages:
 zypper -n install cranix-clone cranix-proxy
-
-#Activate some services
-for i in $( cat /usr/share/cranix/setup/services-to-enable )
-do
-    systemctl enable $i
-done
+ln /usr/sbin/crx_api_post_file.sh /usr/sbin/oss_api_post_file.sh
+echo "delete from Acls where acl='cephalix.manage'" | mysql CRX
+/usr/lib/systemd-presets-branding/branding-preset-states save
 systemctl enable openvpn@CEPHALIX
 reboot
 
@@ -1080,9 +1084,9 @@ reboot
       <package>icinga2</package>
       <package>icingaweb2</package>
       <package>mc</package>
-      <pacakge>mariadb</pacakge>
-      <pacakge>mariadb-client</pacakge>
-      <pacakge>mariadb-errormessages</pacakge>
+      <package>mariadb</package>
+      <package>mariadb-client</package>
+      <package>mariadb-errormessages</package>
       <package>openvpn</package>
       <package>cranix-base</package>
       <package>salt</package>
