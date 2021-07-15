@@ -686,7 +686,7 @@ pubmed.gov
           <pool config:type="boolean">false</pool>
           <raid_options/>
           <resize config:type="boolean">false</resize>
-          <size>105G</size>
+          <size>55G</size>
           <subvolumes config:type="list"/>
         </partition>
       </partitions>
@@ -712,7 +712,7 @@ pubmed.gov
           <pool config:type="boolean">false</pool>
           <raid_options/>
           <resize config:type="boolean">false</resize>
-          <size>100G</size>
+          <size>50G</size>
           <subvolumes config:type="list"/>
         </partition>
         <partition>
@@ -755,7 +755,7 @@ pubmed.gov
           <pool config:type="boolean">false</pool>
           <raid_options/>
           <resize config:type="boolean">false</resize>
-          <size>150G</size>
+          <size>200G</size>
           <subvolumes config:type="list"/>
         </partition>
         <partition>
