@@ -1041,7 +1041,7 @@ sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
 /usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --samba
 
-/usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --accounts --dhcp --postsetup
+/usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --accounts --dhcp --postsetup --filter --api
 
 echo '###ipAdmin###	admin.###domain### admin
 ###ipMail###	mailserver.###domain### mailserver
