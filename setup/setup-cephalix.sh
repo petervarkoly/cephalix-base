@@ -71,7 +71,7 @@ EOF
 mkdir -p /root/CEPHALIX/{CA_MGM,configs}
 cp /usr/share/cephalix/setup/create_server_certificates.sh /root/CEPHALIX/
 chmod 750 /root/CEPHALIX/create_server_certificates.sh
-mkdir -p /srv/www/htdocs/admin/{configs,isos}
+mkdir -p /srv/www/admin/{configs,isos}
 
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"

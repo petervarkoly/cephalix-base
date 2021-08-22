@@ -1036,7 +1036,8 @@ echo -n '###cephalixPW###' > /root/cpasswd
 chmod 600 /root/cpasswd
 
 sleep 10
-zypper -n install cranix-java cranix-web cranix-lang
+zypper -n install cranix-java
+zypper -n install cranix-web
 sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
 /usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --samba
@@ -1058,6 +1059,7 @@ ln /usr/sbin/crx_api_post_file.sh /usr/sbin/oss_api_post_file.sh
 echo "delete from Acls where acl='cephalix.manage'" | mysql CRX
 /usr/lib/systemd-presets-branding/branding-preset-states save
 systemctl enable openvpn@CEPHALIX
+firewall-cmd --zone=trusted  --add-interface=tun0 --permanent
 reboot
 
 ]]></source>
