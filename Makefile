@@ -7,7 +7,7 @@ CRANIXHARE      = $(DESTDIR)/usr/share/cranix/
 TOPACKAGE       = Makefile etc setup tools templates plugins sbin README.md
 HERE            = $(shell pwd)
 PACKAGE         = cephalix-base
-REPO		= /home/OSC/home:varkoly:CRANIX-4-2:leap15.2
+REPO		= /home/OSC/home:pvarkoly:CRANIX
 
 install:
 	mkdir -p $(SHARE)/{setup,templates,tools,plugins}
