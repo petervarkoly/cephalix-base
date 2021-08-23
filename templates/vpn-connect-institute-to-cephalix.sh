@@ -39,11 +39,15 @@ remote ###CEPHALIX### 1194
 nobind
 EOF
 
+systemctl start   openvpn@CEPHALIX
+systemctl enable  openvpn@CEPHALIX
+
 #Allow Cephalix all access
 echo '###ZADMIN### zadmin' >> /etc/hosts
 if [ -e /usr/bin/firewall-cmd ]
 then
 	firewall-cmd --zone=trusted  --add-interface=tun0 --permanent
+        firewall-cmd --reload
 else
 	. /etc/sysconfig/SuSEfirewall2
 	if [ "$FW_TRUSTED_NETS" = "${FW_TRUSTED_NETS/zadmin}" ];
@@ -52,7 +56,4 @@ else
 	fi
 	SuSEfirewall2
 fi
-
-systemctl start   openvpn@CEPHALIX
-systemctl enable  openvpn@CEPHALIX
 
