@@ -1,5 +1,6 @@
 #!/bin/bash
 uuid=$1
+mkdir -p /usr/share/cephalix/templates/iso/
 cp /srv/www/admin/configs/${uuid}.xml /usr/share/cephalix/templates/iso/cranix.xml
 sed 's/halt config:type="boolean">false/halt config:type="boolean">true/' /srv/www/admin/configs/${uuid}.xml > /usr/share/cephalix/templates/iso/cranix-usb.xml
 

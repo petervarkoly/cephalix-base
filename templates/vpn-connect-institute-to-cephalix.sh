@@ -41,12 +41,17 @@ EOF
 
 #Allow Cephalix all access
 echo '###ZADMIN### zadmin' >> /etc/hosts
-. /etc/sysconfig/SuSEfirewall2
-if [ "$FW_TRUSTED_NETS" = "${FW_TRUSTED_NETS/zadmin}" ];
+if [ -e /usr/bin/firewall-cmd ]
 then
-	sed -i "s/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS=\"zadmin ###CEPHALIX### $FW_TRUSTED_NETS\"/" /etc/sysconfig/SuSEfirewall2
+	firewall-cmd --zone=trusted  --add-interface=tun0 --permanent
+else
+	. /etc/sysconfig/SuSEfirewall2
+	if [ "$FW_TRUSTED_NETS" = "${FW_TRUSTED_NETS/zadmin}" ];
+	then
+		sed -i "s/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS=\"zadmin ###CEPHALIX### $FW_TRUSTED_NETS\"/" /etc/sysconfig/SuSEfirewall2
+	fi
+	SuSEfirewall2
 fi
-SuSEfirewall2
 
 systemctl start   openvpn@CEPHALIX
 systemctl enable  openvpn@CEPHALIX

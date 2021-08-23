@@ -41,6 +41,14 @@ cat <<EOF >> /etc/ssl/servercerts/certs/cranix.###domain###.key.pem
 REPLACE-SCHOOL-KEY
 EOF
 
+cat <<EOF > /etc/ssl/servercerts/certs/proxy.###domain###.cert.pem
+REPLACE-PROXY-CERT
+EOF
+
+cat <<EOF >> /etc/ssl/servercerts/certs/proxy.###domain###.key.pem
+REPLACE-PROXY-KEY
+EOF
+
 cat <<EOF > /etc/openvpn/CEPHALIX.conf
 client
 dev tun
@@ -67,12 +75,17 @@ sed -i 's/zadminip/###ZADMIN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 
 #Allow Cephalix all access
 echo '###ZADMIN### zadmin' >> /etc/hosts
-. /etc/sysconfig/SuSEfirewall2
-if [ "$FW_TRUSTED_NETS" = "${FW_TRUSTED_NETS/zadmin}" ];
+if [ -e /usr/bin/firewall-cmd ]
 then
-	sed -i "s/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS=\"zadmin ###CEPHALIX### $FW_TRUSTED_NETS\"/" /etc/sysconfig/SuSEfirewall2
+        firewall-cmd --zone=trusted  --add-interface=tun0 --permanent
+else
+        . /etc/sysconfig/SuSEfirewall2
+        if [ "$FW_TRUSTED_NETS" = "${FW_TRUSTED_NETS/zadmin}" ];
+        then
+                sed -i "s/^FW_TRUSTED_NETS=.*/FW_TRUSTED_NETS=\"zadmin ###CEPHALIX### $FW_TRUSTED_NETS\"/" /etc/sysconfig/SuSEfirewall2
+        fi
+        SuSEfirewall2
 fi
-SuSEfirewall2
 systemctl start   openvpn@CEPHALIX
 systemctl enable  openvpn@CEPHALIX
 systemctl restart apache

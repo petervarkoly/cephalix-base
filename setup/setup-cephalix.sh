@@ -3,23 +3,37 @@ if [ ! -e /root/.ssh/id_dsa ]; then
 	/usr/bin/ssh-keygen -t dsa -N "" -f /root/.ssh/id_dsa
 fi
 echo  -n "   CEPHALIX domain name: "; read DOMAIN
+echo ""
 echo  -n "Country code (DE,EN ..): "; read C
+echo ""
 echo  -n "       State/Bundesland: "; read STATE
+echo ""
 echo  -n "             City/Stadt: "; read locality
+echo ""
 echo  -n "The name of your organisation: "; read O
+echo ""
 echo     "The IP Address of CEPHALIX server from which the servers will be connected.";
 echo  -n "If the servers will be connected  via VPN this is  the VPN-tunnel  address: "; read zadmin
+echo ""
 echo     "The official IP Addres or DNS name of the CEPHALIX."
 echo     "This is only  required for the VPN connections.";
 echo  -n "In other case leave it empty! : "; read CEPHALIX
+echo ""
 echo  -n "The VPN IP-Adress of the first server: "; read ipVPN
+echo ""
 echo  -n "IP address of the ntp server: "; read ipNTP
+echo ""
 echo  -n "Standard IP address in transport network for the servers: "; read ipTrNet
+echo ""
 echo  -n "Standard netmask  in transport network for the servers: "; read nmTrNet
+echo ""
 echo  -n "Standard gateway in transport network for the servers: "; read gwTrNet
-echo     "The internal network of the first server. Several IP-Adresses"
-echo  -n "of the server will be calculated based on this: X.X.X.2, X.X.X.3:"; read network
+echo ""
+echo     "The address of internal network of the first server. Without network mask"
+echo  -n "Several IP-Adresses of the server will be calculated based on this: X.X.X.2, X.X.X.3:"; read network
+echo ""
 echo  -n "The netmask in bit of the internal network (16):"; read netmask
+echo ""
 
 ipAdmin=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
 ipMail=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
@@ -34,7 +48,6 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
 {
   "CEPHALIX_PATH":"/root/CEPHALIX/",
   "CEPHALIX_DOMAIN":"$DOMAIN",
-  "VPN_IP":"10.255.0.8",
   "NTP":"$ipNTP",
   "CEPHALIX":"$CEPHALIX",
   "ZADMIN":"$zadmin",
@@ -42,7 +55,7 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "LANGUAGE":"$C",
   "CCODE":"$C",
   "adminPW": "",
-  "anonDhcp": "$anonDhcp",
+  "anonDhcpRange": "$anonDhcp",
   "anonDhcpNetwork":"$anonDhcpNetwork",
   "cephalixPW": "",
   "domain": "",
@@ -71,7 +84,7 @@ EOF
 mkdir -p /root/CEPHALIX/{CA_MGM,configs}
 cp /usr/share/cephalix/setup/create_server_certificates.sh /root/CEPHALIX/
 chmod 750 /root/CEPHALIX/create_server_certificates.sh
-mkdir -p /srv/www/admin/{configs,isos}
+mkdir -p /srv/www/htdocs/admin/{configs,isos}
 
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "CA" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
 /root/CEPHALIX/create_server_certificates.sh -P /root/CEPHALIX/ -N "cephalix" -D "$DOMAIN" -C $C -S "$STATE" -L "$locality" -O "CEPHALIX of $O"
