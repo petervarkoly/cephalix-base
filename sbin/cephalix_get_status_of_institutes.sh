@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright 2021 Peter Varkoly <pvarkoly@cephalix.eu>
 
 for id in $( echo "SELECT id from CephalixInstitutes where not deleted='Y' " | /usr/bin/mysql  CRX )
 do

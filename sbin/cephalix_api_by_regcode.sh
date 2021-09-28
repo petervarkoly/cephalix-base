@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright 2021 Peter Varkoly <pvarkoly@cephalix.eu>
 # Copyright 2019 Peter Varkoly <peter@varkoly.de>
 
 REGCODE=$1

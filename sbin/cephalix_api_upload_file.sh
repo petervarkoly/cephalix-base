@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright 2021 Peter Varkoly <pvarkoly@cephalix.eu>
 # Copyright Peter Varkoly <peter@varkoly.de>
 UUID=$1
 CALL=$2

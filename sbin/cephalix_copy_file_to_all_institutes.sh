@@ -1,4 +1,5 @@
 #!/bin/bash -x
+# Copyright 2021 Peter Varkoly <pvarkoly@cephalix.eu>
 
 SOURCE=$1
 DIRECTION=$1
