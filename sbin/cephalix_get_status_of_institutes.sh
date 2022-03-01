@@ -1,16 +1,11 @@
 #!/bin/bash
-# Copyright 2021 Peter Varkoly <pvarkoly@cephalix.eu>
-
+# Copyright 2022 Peter Varkoly <pvarkoly@cephalix.eu> Nuremberg
+PIDDIR=/run/get_status_of_institutes
+LOGDIR=/var/log/get_status_of_institute
+mkdir -p ${PIDDIR} ${LOGDIR}
 for id in $( echo "SELECT id from CephalixInstitutes where not deleted='Y' " | /usr/bin/mysql  CRX )
 do
-        IP=$( /usr/sbin/crx_api_text.sh GET institutes/$id/ipVPN )
-        if [ "$IP" ]; then
-		grep -q $IP /usr/share/cephalix/templates/bad-server &> /dev/null && continue
-                ping -W 2 -c 1 $IP
-                if [ $? = 0 ]; then
-                        ssh $IP  /usr/sbin/crx_system_status.sh > /tmp/institute-status-$id.json
-                        /usr/sbin/crx_api_post_file.sh institutes/$id/status /tmp/institute-status-$id.json
-                fi
-        fi
+        /sbin/startproc -l ${LOGDIR}/${id}.log -p ${PIDDIR}/${id}.pid \
+                /usr/share/cephalix/tools/get_status_of_institute.sh ${id}
+        sleep 1
 done
-

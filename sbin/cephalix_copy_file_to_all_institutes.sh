@@ -13,8 +13,12 @@ fi
 
 for IP in $( /usr/sbin/cephalix_get_institutes.sh  )
 do
-	DIR=$( dirname "${DIRECTION}" )
+	if [ -d ${SOURCE} ]; then
+		DIR=${DIRECTION}
+	else
+		DIR=$( dirname "${DIRECTION}" )
+	fi
 	ssh $IP mkdir -p "${DIR}"
-	scp "${SOURCE}" $IP:"${DIRECTION}"
+	scp -r "${SOURCE}" $IP:"${DIRECTION}"
 done
 

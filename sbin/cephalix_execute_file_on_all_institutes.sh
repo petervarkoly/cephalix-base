@@ -10,4 +10,5 @@ fi
 for IP in $( /usr/sbin/cephalix_get_institutes.sh  )
 do
         ssh $IP $COMMAND
+	echo "$IP done with $?"
 done
