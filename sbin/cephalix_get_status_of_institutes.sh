@@ -3,6 +3,7 @@
 PIDDIR=/run/get_status_of_institutes
 LOGDIR=/var/log/get_status_of_institute
 mkdir -p ${PIDDIR} ${LOGDIR}
+export HOME="/root"
 for id in $( echo "SELECT id from CephalixInstitutes where not deleted='Y' " | /usr/bin/mysql  CRX )
 do
         /sbin/startproc -l ${LOGDIR}/${id}.log -p ${PIDDIR}/${id}.pid \
