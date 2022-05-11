@@ -288,7 +288,27 @@ CRANIX_HOME_BASE="/home"
 CRANIX_ISGATE="yes"
 
 ## Type:	string readonly
+## Default:	"172.16.0.2"
+# IP-address of the mail server and groupware of the CRANIX.
+CRANIX_FILESERVER="###ipFile###"
+
+## Type:        string readonly
+## Default:     "fileserver"
+# Name of the file server of the CRANIX.
+CRANIX_FILESERVER_NETBIOSNAME="fileserver"
+
+## Type:	string readonly
 ## Default:	"172.16.0.3"
+# IP-address of the mail server and groupware of the CRANIX.
+CRANIX_PRINTSERVER="###ipPrint###"
+
+## Type:        string readonly
+## Default:     "printserver"
+# Name of the print server of the CRANIX.
+CRANIX_PRINTSERVER_NETBIOSNAME="mailserver"
+
+## Type:	string readonly
+## Default:	"172.16.0.4"
 # IP-address of the mail server and groupware of the CRANIX.
 CRANIX_MAILSERVER="###ipMail###"
 
@@ -536,6 +556,11 @@ CRANIX_CLEAN_UP_PRINTERS="yes"
 
 ## Type:        yesno
 ## Default:     yes
+# Should the logon script make the printer connections
+CRANIX_LOGON_CONNECT_PRINTERS="yes"
+
+## Type:        yesno
+## Default:     yes
 # If this variable is yes the admin website allows the browser to use the saved passwords.
 CRANIX_ALLOW_SAVE_PASSWORD="no"
 
@@ -571,6 +596,11 @@ CRANIX_ALLOW_WINDOWS_UPDATES="no"
 # DNS Domain of the institute for wich official certificate was created.
 # This can be empty if this is the normal DNS domain
 CRANIX_CERT_DOMAIN=""
+
+## Type:        yesno
+## Default:     yes
+# This is the default setting for must change in the change password interface.
+CRANIX_DEFAULT_MUST_CHANGE="yes"
 ]]></file_contents>
     </file>
     <file>
@@ -1025,6 +1055,10 @@ sed -i 's/LINK_REQUIRED=.*/LINK_REQUIRED="no"/' /mnt/etc/sysconfig/network/confi
         <source><![CDATA[#!/bin/sh
 echo "IPADDR_mail='###ipMail###/###netmask###'
 LABEL_mail='mail'
+IPADDR_file='###ipFile###/###netmask###'
+LABEL_file='file'
+IPADDR_Print='###ipPrint###/###netmask###'
+LABEL_print='print'
 IPADDR_proxy='###ipProxy###/###netmask###'
 LABEL_proxy='proxy'
  " >> /etc/sysconfig/network/ifcfg-eth0
@@ -1045,6 +1079,8 @@ sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 /usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --accounts --dhcp --postsetup --filter --api
 
 echo '###ipAdmin###	admin.###domain### admin
+###ipFile###    fileserver.###domain### fileserver
+###ipPrint###   printserver.###domain### printserver
 ###ipMail###	mailserver.###domain### mailserver
 ###ipProxy###	proxy.###domain### proxy
 ###ZADMIN### zadmin

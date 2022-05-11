@@ -36,10 +36,11 @@ if save_next:
     ip_addresses = list(next_network.hosts())
     defaults['internalNetwork']  = "{}/{}".format(next_network_address, network.prefixlen)
     defaults['ipAdmin']  = ip_addresses[1].exploded
-    defaults['ipMail']   = ip_addresses[2].exploded
+    defaults['ipFile']   = ip_addresses[2].exploded
     defaults['ipPrint']  = ip_addresses[3].exploded
-    defaults['ipProxy']  = ip_addresses[4].exploded
-    defaults['ipBackup'] = ip_addresses[5].exploded
+    defaults['ipMail']   = ip_addresses[4].exploded
+    defaults['ipProxy']  = ip_addresses[5].exploded
+    defaults['ipBackup'] = ip_addresses[6].exploded
     defaults['anonDhcpRange']   = '{} {}'.format(ip_addresses[255],ip_addresses[510])
     defaults['anonDhcpNetwork'] = '{}/{}'.format(ip_addresses[255],network_dhcp.prefixlen)
     defaults['firstRoom']     = ip_addresses[511].exploded
