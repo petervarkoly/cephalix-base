@@ -82,7 +82,7 @@ nobind
 ]]></file_contents>
     </file>
     <file>
-      <file_path>/root/.ssh/authorized_keys</file_path>
+      <file_path>/etc/ssl/servercerts/certs/authorized_keys</file_path>
       <file_owner>root:root</file_owner>
       <file_permissions>600</file_permissions>
       <file_contents><![CDATA[REPLACE-SSHKEY
@@ -1074,6 +1074,9 @@ zypper -n install cranix-java
 zypper -n install cranix-web
 sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 
+mkdir -p /root/.ssh/
+cp -p /etc/ssl/servercerts/certs/authorized_keys /root/.ssh/authorized_keys
+
 /usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --samba
 
 /usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --accounts --dhcp --postsetup --filter --api
@@ -1095,7 +1098,7 @@ ln /usr/sbin/crx_api_post_file.sh /usr/sbin/oss_api_post_file.sh
 echo "delete from Acls where acl='cephalix.manage'" | mysql CRX
 /usr/lib/systemd-presets-branding/branding-preset-states save
 systemctl enable openvpn@CEPHALIX
-firewall-cmd --zone=trusted  --add-interface=tun0 --permanent
+firewall-offline-cmd --zone=trusted  --add-interface=tun0
 reboot
 
 ]]></source>
