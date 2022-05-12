@@ -36,7 +36,7 @@ if save_next:
     ip_addresses = list(next_network.hosts())
     defaults['internalNetwork']  = "{}/{}".format(next_network_address, network.prefixlen)
     defaults['ipAdmin']  = ip_addresses[1].exploded
-    defaults['ipFile']   = ip_addresses[2].exploded
+    defaults['ipFileserver']   = ip_addresses[2].exploded
     defaults['ipPrint']  = ip_addresses[3].exploded
     defaults['ipMail']   = ip_addresses[4].exploded
     defaults['ipProxy']  = ip_addresses[5].exploded

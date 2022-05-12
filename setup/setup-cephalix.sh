@@ -36,7 +36,7 @@ echo  -n "The netmask in bit of the internal network (16):"; read netmask
 echo ""
 
 ipAdmin=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
-ipFile=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
+ipFileserver=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
 ipPrint=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".4" }' )
 ipMail=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".5" }' )
 ipProxy=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
@@ -66,7 +66,7 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "ipAdmin": "$ipAdmin",
   "ipGateway": "$ipAdmin",
   "ipBackup": "$ipBackup",
-  "ipFile": "$ipFile",
+  "ipFileserver": "$ipFileserver",
   "ipPrint": "$ipPrint",
   "ipMail": "$ipMail",
   "ipProxy": "$ipProxy",

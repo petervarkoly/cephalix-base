@@ -290,7 +290,7 @@ CRANIX_ISGATE="yes"
 ## Type:	string readonly
 ## Default:	"172.16.0.2"
 # IP-address of the mail server and groupware of the CRANIX.
-CRANIX_FILESERVER="###ipFile###"
+CRANIX_FILESERVER="###ipFileserver###"
 
 ## Type:        string readonly
 ## Default:     "fileserver"
@@ -1055,7 +1055,7 @@ sed -i 's/LINK_REQUIRED=.*/LINK_REQUIRED="no"/' /mnt/etc/sysconfig/network/confi
         <source><![CDATA[#!/bin/sh
 echo "IPADDR_mail='###ipMail###/###netmask###'
 LABEL_mail='mail'
-IPADDR_file='###ipFile###/###netmask###'
+IPADDR_file='###ipFileserver###/###netmask###'
 LABEL_file='file'
 IPADDR_Print='###ipPrint###/###netmask###'
 LABEL_print='print'
@@ -1079,7 +1079,7 @@ sed -i s/^DHCPD_INTERFACE=.*/DHCPD_INTERFACE="eth0"/ /etc/sysconfig/dhcpd
 /usr/share/cranix/setup/scripts/crx-setup.sh --passwdf=/root/passwd --cephalixpwf=/root/cpasswd --accounts --dhcp --postsetup --filter --api
 
 echo '###ipAdmin###	admin.###domain### admin
-###ipFile###    fileserver.###domain### fileserver
+###ipFileserver###    fileserver.###domain### fileserver
 ###ipPrint###   printserver.###domain### printserver
 ###ipMail###	mailserver.###domain### mailserver
 ###ipProxy###	proxy.###domain### proxy
