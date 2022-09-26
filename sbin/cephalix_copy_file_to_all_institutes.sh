@@ -1,5 +1,5 @@
 #!/bin/bash -x
-# Copyright 2021 Peter Varkoly <pvarkoly@cephalix.eu>
+# Copyright 2022 Peter Varkoly <pvarkoly@cephalix.eu>
 
 SOURCE=$1
 DIRECTION=$1
@@ -13,8 +13,12 @@ fi
 
 for IP in $( /usr/sbin/cephalix_get_institutes.sh  )
 do
-	DIR=$( dirname "${DIRECTION}" )
+	if [ -d ${SOURCE} ]; then
+		DIR=${DIRECTION}
+	else
+		DIR=$( dirname "${DIRECTION}" )
+	fi
 	ssh $IP mkdir -p "${DIR}"
-	scp "${SOURCE}" $IP:"${DIRECTION}"
+	scp -r "${SOURCE}" $IP:"${DIRECTION}"
 done
 
