@@ -305,7 +305,7 @@ CRANIX_PRINTSERVER="###ipPrint###"
 ## Type:        string readonly
 ## Default:     "printserver"
 # Name of the print server of the CRANIX.
-CRANIX_PRINTSERVER_NETBIOSNAME="mailserver"
+CRANIX_PRINTSERVER_NETBIOSNAME="printserver"
 
 ## Type:	string readonly
 ## Default:	"172.16.0.4"
@@ -1093,7 +1093,7 @@ echo '###ipAdmin###	admin.###domain### admin
 sed -i 's/connectip/###ipVPN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 sed -i 's/zadminip/###ZADMIN###/g' /etc/apache2/vhosts.d/cephalix_include.conf
 #Install some late packages:
-zypper -n install cranix-clone cranix-proxy
+zypper -n install cranix-clone cranix-unbound
 ln /usr/sbin/crx_api_post_file.sh /usr/sbin/oss_api_post_file.sh
 echo "delete from Acls where acl='cephalix.manage'" | mysql CRX
 /usr/lib/systemd-presets-branding/branding-preset-states save
