@@ -12,6 +12,11 @@ READONLY = ( "CEPHALIX", "CEPHALIX_PATH", "CEPHALIX_DOMAIN", "CCODE", "LANGUAGE"
 
 #Read datas from stdin
 institute=json.loads(sys.stdin.read())
+for key in institute:
+    try:
+      institute[key] = institute[key].strip()
+    except:
+       pass
 #Read the defaults from the config file
 defaults=json.loads(open(DEFAULTS_FILE,"r").read())
 SSLVARS = {}

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import json
 import os
 import sys
@@ -11,7 +11,7 @@ dyndns=""
 def create_open_task():
   TASK = "/var/adm/cranix/opentasks/100-validate-regcode-" + os.popen('uuidgen -t').read().rstrip()
   with open(TASK, "w") as f:
-    f.write(json.dumps(dyndns,sort_keys=True,ensure_ascii=False,encoding="utf-8"))
+    f.write(json.dumps(dyndns,sort_keys=True,ensure_ascii=False))
 
 dyndns=json.loads(sys.stdin.read())
 

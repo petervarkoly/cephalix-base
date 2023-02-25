@@ -36,10 +36,11 @@ echo  -n "The netmask in bit of the internal network (16):"; read netmask
 echo ""
 
 ipAdmin=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".2" }' )
-ipMail=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
+ipFileserver=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".3" }' )
 ipPrint=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".4" }' )
-ipProxy=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".5" }' )
-ipBackup=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
+ipMail=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".5" }' )
+ipProxy=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".6" }' )
+ipBackup=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3 ".7" }' )
 anonDhcp=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0 " $1 "." $2 "." $3+1 ".15" }' )
 anonDhcpNetwork=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+1 ".0/27" }' )
 firstRoom=$( echo $network | gawk -F "." '{ print $1 "." $2 "." $3+2 ".0" }' )
@@ -65,8 +66,9 @@ cat<<EOF > /usr/share/cephalix/templates/Defaults.ini
   "ipAdmin": "$ipAdmin",
   "ipGateway": "$ipAdmin",
   "ipBackup": "$ipBackup",
-  "ipMail": "$ipMail",
+  "ipFileserver": "$ipFileserver",
   "ipPrint": "$ipPrint",
+  "ipMail": "$ipMail",
   "ipProxy": "$ipProxy",
   "ipTrNet": "$ipTrNet",
   "ipVPN": "$ipVPN",
