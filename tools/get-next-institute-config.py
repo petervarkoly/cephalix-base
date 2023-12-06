@@ -18,7 +18,7 @@ CEPHALIX_PATH = defaults['CEPHALIX_PATH']
 save_next     = defaults.get("SAVE_NEXT",True)
 save_next_vpn = defaults.get("SAVE_NEXT_VPN",True)
 
-defaults['regCode'] = os.popen('/usr/share/cephalix/tools/create_regcode.sh').read()
+defaults['regCode'] = os.popen('/usr/share/cephalix/tools/create_regcode.sh').read().strip()
 
 # Handle VPN
 if save_next_vpn:
