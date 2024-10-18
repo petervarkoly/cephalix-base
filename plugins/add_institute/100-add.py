@@ -16,7 +16,9 @@ def create_open_task():
 institute=json.loads(sys.stdin.read())
 
 ip=institute['ipVPN'] 
-name=institute['uuid'] 
+name=institute['uuid']
+regCode=institute['regCode']
+os.system("/root/bin/add_regcode_to_hwpass.sh {0}".format(regCode))
 domain=os.popen('/usr/sbin/crx_api_text.sh GET system/configuration/DOMAIN').read()
 
 if os.system("samba-tool dns add localhost " + domain + " " + name + " A " + ip + "  -U register%" + passwd ) != 0:

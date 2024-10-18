@@ -11,9 +11,11 @@ def create_open_task(institute):
 
 institute=json.loads(sys.stdin.read())
 
-ip=institute['ipVPN'] 
-cephalixPW=institute['cephalixPW'] 
-adminPW=institute['adminPW'] 
+ip=institute['ipVPN']
+cephalixPW=institute['cephalixPW']
+adminPW=institute['adminPW']
+regCode=institute['regCode']
+os.system("/root/bin/add_regcode_to_hwpass.sh {0}".format(regCode))
 
 if cephalixPW != "":
   cmd="ssh " + ip + " /usr/bin/samba-tool user setpassword cephalix --newpassword='" + cephalixPW +"'"

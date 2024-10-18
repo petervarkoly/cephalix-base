@@ -77,8 +77,55 @@ cert /etc/openvpn/CEPHALIX/vpncert.pem
 key  /etc/openvpn/CEPHALIX/vpnkey.pem
 proto udp
 remote ###CEPHALIX### 1194
+script-security 2
+up   /etc/openvpn/CEPHALIX.up
+down /etc/openvpn/CEPHALIX.down
 nobind
 
+]]></file_contents>
+    </file>
+    <file>
+      <file_path>/etc/openvpn/CEPHALIX.up</file_path>
+      <file_owner>root:root</file_owner>
+      <file_permissions>755</file_permissions>
+      <file_contents><![CDATA[#!/bin/bash
+# Set vpn device in trusted zune
+#
+TUN=$1
+
+if [ -e /usr/sbin/crx_firewall.py ]; then
+        echo "/usr/sbin/iptables -I INPUT -i $TUN -j ACCEPT" | /usr/share/cranix/tools/firewall/add_fw_open_rules.py
+        echo "/usr/sbin/iptables -I INPUT -i $TUN -j ACCEPT" | /usr/share/cranix/tools/firewall/add_fw_pre_rules.py
+else
+        /usr/bin/firewall-cmd --zone=trusted --list-interfaces | grep -l $TUN || {
+                /usr/bin/firewall-cmd --zone=trusted --add-interface=$TUN
+        }
+        /usr/bin/firewall-cmd --zone=trusted --list-interfaces --permanent | grep -l $TUN || {
+                /usr/bin/firewall-cmd --zone=trusted --add-interface=$TUN --permanent
+        }
+fi
+]]></file_contents>
+    </file>
+    <file>
+      <file_path>/etc/openvpn/CEPHALIX.down</file_path>
+      <file_owner>root:root</file_owner>
+      <file_permissions>755</file_permissions>
+      <file_contents><![CDATA[#!/bin/bash
+# Set vpn device in trusted zune
+#
+TUN=$1
+
+if [ -e /usr/sbin/crx_firewall.py ]; then
+        echo "/usr/sbin/iptables -I INPUT -i $TUN -j ACCEPT" | /usr/share/cranix/tools/firewall/del_fw_open_rules.py
+        echo "/usr/sbin/iptables -I INPUT -i $TUN -j ACCEPT" | /usr/share/cranix/tools/firewall/del_fw_pre_rules.py
+else
+        /usr/bin/firewall-cmd --zone=trusted --list-interfaces | grep -l $TUN || {
+                /usr/bin/firewall-cmd --zone=trusted --add-interface=$TUN
+        }
+        /usr/bin/firewall-cmd --zone=trusted --list-interfaces --permanent | grep -l $TUN || {
+                /usr/bin/firewall-cmd --zone=trusted --add-interface=$TUN --permanent
+        }
+fi
 ]]></file_contents>
     </file>
     <file>
@@ -681,8 +728,8 @@ pubmed.gov
     <ntp_sync>15</ntp_sync>
   </ntp-client>
   <firewall>
-    <enable_firewall config:type="boolean">true</enable_firewall>
-    <start_firewall config:type="boolean">true</start_firewall>
+    <enable_firewall config:type="boolean">false</enable_firewall>
+    <start_firewall config:type="boolean">false</start_firewall>
   </firewall>
   <partitioning config:type="list">
     <drive>
@@ -1098,13 +1145,55 @@ ln /usr/sbin/crx_api_post_file.sh /usr/sbin/oss_api_post_file.sh
 echo "delete from Acls where acl='cephalix.manage'" | mysql CRX
 /usr/lib/systemd-presets-branding/branding-preset-states save
 systemctl enable openvpn@CEPHALIX
-firewall-offline-cmd --zone=trusted  --add-interface=tun0
 reboot
-
 ]]></source>
       </script>
     </init-scripts>
   </scripts>
+  <add-on>
+    <add_on_products config:type="list">
+      <listentry>
+        <media_url>http://download.opensuse.org/update/leap/VERSION_ID/backports/</media_url>
+        <product>backports</product>
+        <product_dir>/</product_dir>
+        <ask_on_error config:type="boolean">false</ask_on_error>
+        <name>Update repository of openSUSE Backports</name>
+        <priority config:type="integer">10</priority>
+      </listentry>
+      <listentry>
+        <media_url>http://download.opensuse.org/distribution/leap/VERSION_ID/repo/non-oss/</media_url>
+        <product>non-oss</product>
+        <product_dir>/</product_dir>
+        <ask_on_error config:type="boolean">false</ask_on_error>
+        <name>Non-OSS Repository</name>
+        <priority config:type="integer">20</priority>
+      </listentry>
+      <listentry>
+        <media_url>http://download.opensuse.org/distribution/leap/VERSION_ID/repo/oss/</media_url>
+        <product>oss</product>
+        <product_dir>/</product_dir>
+        <ask_on_error config:type="boolean">false</ask_on_error>
+        <name>Main Repository</name>
+        <priority config:type="integer">20</priority>
+      </listentry>
+      <listentry>
+        <media_url>http://download.opensuse.org/update/leap/VERSION_ID/sle/</media_url>
+        <product>sles</product>
+        <product_dir>/</product_dir>
+        <ask_on_error config:type="boolean">false</ask_on_error>
+        <name>Update repository with updates from SUSE Linux Enterprise 15</name>
+        <priority config:type="integer">20</priority>
+      </listentry>
+      <listentry>
+        <media_url>http://download.opensuse.org/update/leap/VERSION_ID/oss</media_url>
+        <product>update</product>
+        <product_dir>/</product_dir>
+        <ask_on_error config:type="boolean">false</ask_on_error>
+        <name>Main Update Repository</name>
+        <priority config:type="integer">20</priority>
+      </listentry>
+    </add_on_products>
+  </add-on>
   <software>
     <patterns config:type="list">
       <pattern>base</pattern>
@@ -1121,7 +1210,6 @@ reboot
       <package>gutenprint</package>
       <package>cephalix-client</package>
       <package>dhcp-server</package>
-      <package>firewalld</package>
       <package>icinga2</package>
       <package>icingaweb2</package>
       <package>mc</package>
@@ -1130,6 +1218,7 @@ reboot
       <package>mariadb-errormessages</package>
       <package>openvpn</package>
       <package>cranix-base</package>
+      <package>cranix-firewall</package>
       <package>salt</package>
       <package>salt-api</package>
       <package>salt-bash-completion</package>
